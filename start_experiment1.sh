@@ -5,11 +5,11 @@ TEMPLATE='experiments/epuck_EC_locale_template.argos'
 OUTFILE="experiments/epuck$1.argos"
 SCTEMPLATE='contracts/smart_contract_template.sol'
 SCOUT='contracts/smart_contract_threshold.sol'
-BASEDIR="$HOME/Documents/col_estimation/controllers/epuck_environment_classification/"
+BASEDIR="$HOME/Documents/blockchain-journal-bc/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para$1/data" # always without '/' at the end!!
 MINERID=$(expr 120 + $1)
 echo "MINERID is ${MINERID}"
-NUMROBOTS=(20)
+NUMROBOTS=(2)
 THRESHOLDS=(80000 60000 220000 240000) 
 REPETITIONS=20
 DECISIONRULE=$3
@@ -17,7 +17,7 @@ PERCENT_BLACKS=(40)
 MININGDIFF=1000000
 USEMULTIPLENODES=true
 USEBACKGROUNDGETHCALLS=true
-MAPPINGPATH="$HOME/Documents/col_estimation/experiments/config$1.txt"
+MAPPINGPATH="$HOME/Documents/blockchain-journal-bc/experiments/config$1.txt"
 CHANGEDIFFIULTY=""
 NUMRUNS=1
 THREADS=20
@@ -32,13 +32,13 @@ MINERNODE=${USEDNODES[0]}
 USECLASSICALAPPROACH=false
 NUMBYZANTINE=(0)
 BYZANTINESWARMSTYLE=0
-MIXING="true" # mix or tiles or just have a binary field
+COLORMIXING="true" # mix or tiles or just have a binary field
 FLOODINGATTACK="true"
 MAXFLOODING=20
 SUBSWARMCONSENSUS=false # Determines if all N robots have to agree or
 		       # only the beneficial subswarm.
 
-DATADIRBASE="data/experiment1_decision${DECISIONRULE}_flooding${FLOODINGATTACK}_mixing${MIXING}-node$1-${NOW}/"
+DATADIRBASE="data/experiment1_decision${DECISIONRULE}_flooding${FLOODINGATTACK}_mixing${COLORMIXING}-node$1-${NOW}/"
 
 if [ "$USECLASSICALAPPROACH" == "true" ]; then
     REALTIME="false"
@@ -104,11 +104,11 @@ fi
 	# Create and compile smart contract
 	sed -e "s|THRESHOLD|$THRESHOLD|g" $SCTEMPLATE > $SCOUT
 	solc --overwrite --abi --bin -o . $SCOUT
-	cp Estimation.bin "${BASEDIR}/data.txt"
-	cp Estimation.abi "${BASEDIR}/interface.txt"	      
+	cp Estimation.bin "${BASEDIR}/data$1.txt"
+	cp Estimation.abi "${BASEDIR}/interface$1.txt"	      
 	
 	# Create template
-	sed -e "s|BASEDIR|$BASEDIR|g" -e "s|NUMRUNS|$NUMRUNS|g" -e "s|DATADIR|$DATADIR|g" -e "s|RADIX|$RADIX|g" -e "s|NUMROBOTS|$k|g" -e "s|R0|$R0|g" -e "s|B0|$B0|g" -e "s|PERCENT_BLACK|$PERCENT_BLACK|g" -e "s|PERCENT_WHITE|$PERCENT_WHITE|g" -e "s|DECISIONRULE|$DECISIONRULE|g" -e "s|USEMULTIPLENODES|$USEMULTIPLENODES|g" -e "s|MININGDIFF|$MININGDIFF|g" -e "s|MINERNODE|$MINERNODE|g" -e "s|MINERID|$MINERID|g" -e "s|BASEPORT|$BASEPORT|g" -e "s|USEBACKGROUNDGETHCALLS|$USEBACKGROUNDGETHCALLS|g" -e "s|BLOCKCHAINPATH|$BLOCKCHAINPATH|g" -e "s|MAPPINGPATH|$MAPPINGPATH|g" -e "s|THREADS|$THREADS|g" -e "s|USECLASSICALAPPROACH|$USECLASSICALAPPROACH|g" -e "s|NUMBYZANTINE|$y|g" -e "s|BYZANTINESWARMSTYLE|$BYZANTINESWARMSTYLE|g" -e "s|SUBSWARMCONSENSUS|$SUBSWARMCONSENSUS|g" -e "s|REGENERATEFILE|$REGENERATEFILE|g" -e "s|REALTIME|$REALTIME|g" -e "s|FLOODINGATTACK|$FLOODINGATTACK|g" -e "s|MAXFLOODING|$MAXFLOODING|g" -e "s|MIXING|$MIXING|g" $TEMPLATE > $OUTFILE
+	sed -e "s|BASEDIR|$BASEDIR|g" -e "s|NUMRUNS|$NUMRUNS|g" -e "s|DATADIR|$DATADIR|g" -e "s|RADIX|$RADIX|g" -e "s|NUMROBOTS|$k|g" -e "s|R0|$R0|g" -e "s|B0|$B0|g" -e "s|PERCENT_BLACK|$PERCENT_BLACK|g" -e "s|PERCENT_WHITE|$PERCENT_WHITE|g" -e "s|DECISIONRULE|$DECISIONRULE|g" -e "s|USEMULTIPLENODES|$USEMULTIPLENODES|g" -e "s|MININGDIFF|$MININGDIFF|g" -e "s|MINERNODE|$MINERNODE|g" -e "s|MINERID|$MINERID|g" -e "s|BASEPORT|$BASEPORT|g" -e "s|USEBACKGROUNDGETHCALLS|$USEBACKGROUNDGETHCALLS|g" -e "s|BLOCKCHAINPATH|$BLOCKCHAINPATH|g" -e "s|MAPPINGPATH|$MAPPINGPATH|g" -e "s|THREADS|$THREADS|g" -e "s|USECLASSICALAPPROACH|$USECLASSICALAPPROACH|g" -e "s|NUMBYZANTINE|$y|g" -e "s|BYZANTINESWARMSTYLE|$BYZANTINESWARMSTYLE|g" -e "s|SUBSWARMCONSENSUS|$SUBSWARMCONSENSUS|g" -e "s|REGENERATEFILE|$REGENERATEFILE|g" -e "s|REALTIME|$REALTIME|g" -e "s|FLOODINGATTACK|$FLOODINGATTACK|g" -e "s|MAXFLOODING|$MAXFLOODING|g" -e "s|COLORMIXING|$COLORMIXING|g" $TEMPLATE > $OUTFILE
 	
 	# Start experiment
 	argos3 -c $OUTFILE
