@@ -79,6 +79,7 @@ public:
 	    UInt32 LAMDA, turn;
 	    bool useClassicalApproach;
 	    UInt32 numRobots; /* total amount of robots in the experiment */
+	    bool floodingAttack;
 	     void Init(TConfigurationNode& t_node);
 	  };
 

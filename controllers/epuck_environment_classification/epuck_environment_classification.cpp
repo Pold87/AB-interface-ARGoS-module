@@ -2,7 +2,7 @@
 #include "epuck_environment_classification.h"
 
 #define ALPHA_CHANNEL 0
-#define COLOR_STRENGHT 255
+#define COLOR_STRENGTH 255
 #define N_COL 3
 
 #include <iostream>
@@ -60,7 +60,7 @@ void EPuck_Environment_Classification::SimulationState::Init(TConfigurationNode&
     /* Getting sigma, G value and the decision rule to follow */
     GetNodeAttribute(t_node, "g", g);
     GetNodeAttribute(t_node, "sigma", sigma);
-    GetNodeAttribute(t_node, "lamda", LAMDA);
+    GetNodeAttribute(t_node, "lambda", LAMBDA);
     GetNodeAttribute(t_node, "turn", turn);
     GetNodeAttribute(t_node, "decision_rule", decision_rule);
     GetNodeAttribute(t_node, "exitFlag", exitFlag);
@@ -77,6 +77,7 @@ void EPuck_Environment_Classification::SimulationState::Init(TConfigurationNode&
     GetNodeAttribute(t_node, "use_classical_approach", useClassicalApproach);
     GetNodeAttribute(t_node, "regenerate_file", regenerateFile);
     GetNodeAttribute(t_node, "profiling", profiling);
+    GetNodeAttribute(t_node, "flooding_attack", floodingAttack);
   }
   catch(CARGoSException& ex) {
     THROW_ARGOSEXCEPTION_NESTED("Error initializing controller state parameters.", ex);
@@ -105,9 +106,9 @@ void EPuck_Environment_Classification::Init(TConfigurationNode& t_node) {
   simulationParams.sigma = simulationParams.sigma * 10;
 
   /* Colours read from robots could be changed and added here! AGGIUNGERECOLORI */
-  red.Set(COLOR_STRENGHT,0,0,ALPHA_CHANNEL);      // Change alphachannel has not effect visively, but changing COLOR_STRENGHT could make
-  green.Set(0,COLOR_STRENGHT,0,ALPHA_CHANNEL);    // cells more or less bright
-  blue.Set(0,0,COLOR_STRENGHT,ALPHA_CHANNEL);
+  red.Set(COLOR_STRENGTH,0,0,ALPHA_CHANNEL);      // Change alphachannel has not effect visively, but changing COLOR_STRENGTH could make
+  green.Set(0,COLOR_STRENGTH,0,ALPHA_CHANNEL);    // cells more or less bright
+  blue.Set(0,0,COLOR_STRENGTH,ALPHA_CHANNEL);
 
   /* Assign the initial state of the robots: all in exploration state*/
   m_sStateData.State = SStateData::STATE_EXPLORING;
@@ -290,7 +291,7 @@ void EPuck_Environment_Classification::RandomWalk() {
       else 						// The robot was turning, time to go straight for ->
 	// -> an exponential period of time //
 	{
-	  movement.walkTime = Ceil(m_pcRNG->Exponential((Real)simulationParams.LAMDA)*4); // Exponential random generator. *50 is a scale factor for the time
+	  movement.walkTime = Ceil(m_pcRNG->Exponential((Real)simulationParams.LAMBDA) * 4); // Exponential random generator. *50 is a scale factor for the time
 	  movement.actualDirection = 0;
 	}
     }

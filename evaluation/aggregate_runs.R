@@ -9,7 +9,7 @@ source("myplothelpers.R")
 
 do.exp1 <- FALSE
 do.exp2 <- FALSE
-do.exp3 <- TRUE
+do.exp3 <- FALSE
 
 difficulties <- seq(34, 48, 2)
 thresholds <- seq(30 * 10^4, 6 * 10 ^ 4, - 2 * 10^4)
@@ -17,9 +17,6 @@ num.byz <- 0:12
 style <- "blockchain"
 nodes <- c(0, 6)
 
-## Old version
-##dates.exp1 <- c("12-03-2018")
-## New version will be c("20-04-2018")
 dates.exp1 <- c("20-04-2018")
 dates.exp2 <- c("14-03-2018", "17-04-2018", "18-04-2018")
 dates.exp3.nonsecure <- c("15-04-2018", "24-04-2018") ## non-secure, Byz always 1.0
@@ -28,7 +25,7 @@ dates.exp3.secure <- c("16-04-2018") ## secure, Byz always 1.0
 MULTIPLIER <- 10^7 # Multiplier for converting int to float
 
 data.base <- "~/localestimation/" ## Folder containing the results of the experiments
-report.dir <- "~/Dropbox/mypapers/ANTS2018/ants2018-git/img/" ## Folder images for the paper
+report.dir <- "dummy/" ## Folder images for the paper
 N = 20
 
 ## Experiment 1 (Increasing difficulty)
@@ -355,9 +352,3 @@ if (do.exp3) {
     
 
 }
-
-
-
-
-
-

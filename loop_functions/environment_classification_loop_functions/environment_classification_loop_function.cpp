@@ -6,14 +6,11 @@
 
 #include <time.h>
 
-#define ALPHA_CHANNEL		         0
-#define COLOR_STRENGHT               255
-#define TOTAL_CELLS		             400
-#define ENVIRONMENT_CELL_DIMENSION   1000.0f
-#define N_COL					     3
-#define ARENA_SIZE_X				 1.9f
-#define ARENA_SIZE_Y				 1.9f
-
+#define TOTAL_CELLS 400
+#define ENVIRONMENT_CELL_DIMENSION 1000.0f
+#define N_COL 3
+#define ARENA_SIZE_X 1.9f
+#define ARENA_SIZE_Y 1.9f
 #define DEBUGLOOP true
 
 /****************************************/
@@ -67,7 +64,7 @@ void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& t
       /* Retrieving information about simulation paramaters */
       GetNodeAttribute(tEnvironment, "g", g);
       GetNodeAttribute(tEnvironment, "sigma", sigma);
-      GetNodeAttribute(tEnvironment, "lamda", LAMDA);
+      GetNodeAttribute(tEnvironment, "lambda", LAMBDA);
       GetNodeAttribute(tEnvironment, "turn", turn);
       GetNodeAttribute(tEnvironment, "decision_rule", decisionRule);
       GetNodeAttribute(tEnvironment, "number_of_runs", number_of_runs);
@@ -95,6 +92,7 @@ void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& t
       GetNodeAttribute(tEnvironment, "subswarm_consensus", subswarmConsensus);
       GetNodeAttribute(tEnvironment, "regenerate_file", regenerateFile);
       GetNodeAttribute(tEnvironment, "length_of_runs", lengthOfRuns);
+      GetNodeAttribute(tEnvironment, "color_mixing", colorMixing);
     }
   catch(CARGoSException& ex) {
     THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
@@ -396,24 +394,27 @@ bool CEnvironmentClassificationLoopFunctions::InitRobots() {
   m_pcRNG->Reset();
 
   GetSpace().SetSimulationClock(0);
-  consensousReached = N_COL;
+  consensusReached = N_COL;
 
   for(size_t i = 0; i<N_COL; i++){
     robotsInExplorationCounter[i] = 0;
     robotsInDiffusionCounter[i] = 0;
   }
 
-  int temp1;
-  /* Mix the colours in the vector of cells to avoid the problem of eventual correlations*/
-  for (int k = 0; k < 8; k++){
-    for (int i = TOTAL_CELLS-1; i >= 0; --i){
-      int j = ((int)m_pcRNG->Uniform(bigRange)%(i+1));
-      temp1 = grid[i];
-      grid[i] = grid[j];
-      grid[j] = temp1;
-    }
+  if (colorMixing) {
+  
+    int temp1;
+    /* Mix the colours in the vector of cells to avoid the problem of eventual correlations*/
+    for (int k = 0; k < 8; k++){
+      for (int i = TOTAL_CELLS-1; i >= 0; --i){
+	int j = ((int)m_pcRNG->Uniform(bigRange)%(i+1));
+	temp1 = grid[i];
+	grid[i] = grid[j];
+	grid[j] = temp1;
+      }
+    }    
   }
-
+  
 
   /* Helper array, used to store and shuffle the initial opinions of the robots */
   UInt32 opinionsToAssign[n_robots];
@@ -462,6 +463,8 @@ bool CEnvironmentClassificationLoopFunctions::InitRobots() {
     if (remainingByzantine > 0) {
       cController.setByzantineStyle(byzantineSwarmStyle);
       remainingByzantine--;
+    } else {		
+	cController.setByzantineStyle(0);
     }
     
     opinion.countedCellOfActualOpinion = 0;
@@ -578,7 +581,7 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
    */
   if((n_robots == initialOpinions[0]+initialOpinions[1]+initialOpinions[2])&&(colorOfCell[0]+colorOfCell[1]+colorOfCell[2] == TOTAL_CELLS))
     {
-      consensousReached = N_COL;
+      consensusReached = N_COL;
       /* Multiply sigma and G per 10, so that they will be transformed into ticks (were inserted as  seconds) */
       sigma = sigma * 10;
       g = g * 10;
@@ -835,12 +838,12 @@ bool CEnvironmentClassificationLoopFunctions::IsExperimentFinished() {
   }
 
 
-  /* Vary termination condition: [GetSpace().GetSimulationClock() >= max_time] [consensousReached != N_COL]
+  /* Vary termination condition: [GetSpace().GetSimulationClock() >= max_time] [consensusReached != N_COL]
    * [NumberOfQualities == WrittenQualities ] */
   CSpace::TMapPerType& m_cEpuck = GetSpace().GetEntitiesByType("epuck");
   CSpace::TMapPerType::iterator it = m_cEpuck.begin();
   if(exitFlag){
-    if( consensousReached == 100 || GetSpace().GetSimulationClock() / 10 == lengthOfRuns){
+    if( consensusReached == 100 || GetSpace().GetSimulationClock() / 10 == lengthOfRuns){
       number_of_runs--;
 
       /* RUNSFILE: Write statistics of the last run */
@@ -936,7 +939,7 @@ bool CEnvironmentClassificationLoopFunctions::IsExperimentFinished() {
   }
   else {
 
-    if( written_qualities == number_of_qualities){ //consensousReached != N_COL){  written_qualities == number_of_qualities
+    if( written_qualities == number_of_qualities){ //consensusReached != N_COL){  written_qualities == number_of_qualities
       number_of_runs--;
 
       /* RUNSFILE: Write statistics of the last run */
@@ -1069,12 +1072,11 @@ void CEnvironmentClassificationLoopFunctions::PreStep() {
 
     /* TODO: remove third argument */
     UpdateStatistics(opinion, sStateData, false);
-    if(cController.IsExploring())
-      UpdateCount(collectedData, cell, cPos, opinion, sStateData, id, simulationParam);
+    UpdateCount(collectedData, cell, cPos, opinion, sStateData, id, simulationParam);
     RandomWalk(movement);
   }
   
-  /* Check if a consensous has been reached (i.e., SE is below threshold) */
+  /* Check if a consensus has been reached (i.e., SE is below threshold) */
 
   bool totalConsensusReached = true; 
   for(CSpace::TMapPerType::iterator it = m_cEpuck.begin();it != m_cEpuck.end();++it){
@@ -1086,7 +1088,7 @@ void CEnvironmentClassificationLoopFunctions::PreStep() {
   }
 
   if (totalConsensusReached) {
-    consensousReached = 100;
+    consensusReached = 100;
   }
   
   
@@ -1191,7 +1193,7 @@ void CEnvironmentClassificationLoopFunctions::RandomWalk(EPuck_Environment_Class
       else 						// The robot was turning, time to go straight for ->
 	// -> an exponential period of time //
 	{
-	  movement.walkTime = (m_pcRNG->Exponential((Real)LAMDA))*4; // Exponential random generator. *50 is a scale factor for the time
+	  movement.walkTime = (m_pcRNG->Exponential((Real) LAMBDA )) * 4; // Exponential random generator. *50 is a scale factor for the time
 	  movement.actualDirection = 0;
 	}
     }
