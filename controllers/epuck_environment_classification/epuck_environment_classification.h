@@ -80,6 +80,7 @@ public:
 	    bool useClassicalApproach;
 	    UInt32 numRobots; /* total amount of robots in the experiment */
 	    bool floodingAttack;
+	    int maxFlooding;
 	     void Init(TConfigurationNode& t_node);
 	  };
 

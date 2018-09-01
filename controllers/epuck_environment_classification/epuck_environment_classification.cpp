@@ -78,6 +78,7 @@ void EPuck_Environment_Classification::SimulationState::Init(TConfigurationNode&
     GetNodeAttribute(t_node, "regenerate_file", regenerateFile);
     GetNodeAttribute(t_node, "profiling", profiling);
     GetNodeAttribute(t_node, "flooding_attack", floodingAttack);
+    GetNodeAttribute(t_node, "max_flooding", maxFlooding);
   }
   catch(CARGoSException& ex) {
     THROW_ARGOSEXCEPTION_NESTED("Error initializing controller state parameters.", ex);
@@ -344,12 +345,27 @@ void EPuck_Environment_Classification::Explore() {
 
     /* If this robot is a Byzantine robot, it always uses quality estimate 1.0 */
     if (byzantineStyle == 1) {
-      opinion.quality = 1.0;
+      opinion.quality = 0.0;
 
       /* If this robot is a Byzantine robot, its quality estimate is
 	 drawn from a value between 0.0 and 1.0 */
     } else if (byzantineStyle == 2) {
+      opinion.quality = 1.0;
+
+    } else if (byzantineStyle == 3) {
+
+      CRange<Real> zeroOne(0.0,1.0);
+      Real p = m_pcRNG->Uniform(zeroOne);
+      if (p > 0.5) {
+	opinion.quality = 0.0;
+      }
+      else {
+	opinion.quality = 1.0;
+      }
+
+    } else if (byzantineStyle == 4) {
       opinion.quality = m_pcRNG->Uniform(CRange<Real>(0.0,1.0));
+
       
     } else {
       opinion.quality = (Real)((Real)(opinion.countedCellOfActualOpinion)/(Real)(collectedData.count));    
@@ -364,13 +380,22 @@ void EPuck_Environment_Classification::Explore() {
     if (votesFile.is_open()) {
       votesFile << opinionInt << endl;
     }
+
+    long long ether = 5000000000000000000;
     
-    string args[0] = {};
-    smartContractInterfaceStringBg(robotId, interface, contractAddress, "vote", args, 0, opinionInt, nodeInt, simulationParams.blockchainPath);
+    string args[1] = {opinionInt};
+    smartContractInterfaceStringBg(robotId, interface, contractAddress, "vote", args, 1, ether, nodeInt, simulationParams.blockchainPath);
+
+
+    if (byzantineStyle > 0 && simulationParams.floodingAttack) {
+      for (int i = 0; i < simulationParams.maxFlooding; i++) {
+	smartContractInterfaceStringBg(robotId, interface, contractAddress, "vote", args, 1, ether, nodeInt, simulationParams.blockchainPath);
+      }
+    }
     
     /* Assigning a new exploration and time, for the next exploration state */
     
-    m_sStateData.remainingExplorationTime = Ceil(m_pcRNG->Exponential((Real)simulationParams.sigma));
+    m_sStateData.remainingExplorationTime = 150;
     m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
 
   }  
@@ -510,7 +535,7 @@ void EPuck_Environment_Classification::fromLoopFunctionResPrepare(){
   m_sStateData.State = SStateData::STATE_EXPLORING;
 
   /* Assign the exploration time (random generated) */
-  m_sStateData.remainingExplorationTime = (m_pcRNG->Exponential((Real)simulationParams.sigma));
+  m_sStateData.remainingExplorationTime = 150;
   m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
 
   int robotId = Id2Int(GetId());
