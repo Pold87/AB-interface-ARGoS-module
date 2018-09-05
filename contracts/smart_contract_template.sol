@@ -68,12 +68,12 @@ function askForPayout() public {
     /* Find out which votes are old enough */
     for (uint a = 0; a < allVotes.length; a++) {
         if (allVotes[a].blockNumber < block.number - 2) {
-
-	    if (allVotes[a].quality > mean) {
+	  
 	      allVotes[a].diff = abs(mean - allVotes[a].quality);
+	      
+	    if (allVotes[a].quality > mean) {
 	      ripedVotesGreater.push(allVotes[a]);
 	    } else {
-	      allVotes[a].diff = abs(mean - allVotes[a].quality);
 	      ripedVotesSmaller.push(allVotes[a]);
 	    }
 
@@ -100,7 +100,6 @@ function askForPayout() public {
     /* Sort smaller than (in descending order) */
     for (uint d = 0; d < ripedVotesSmaller.length; d++){
         votingInformation memory vi2 = ripedVotesSmaller[d];
-        vi2.quality = abs(mean - vi2.quality);
         j = d;
 
         while (j > 0 && ripedVotesSmaller[j - 1].quality < vi2.quality) {
