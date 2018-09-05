@@ -29,7 +29,7 @@ CEnvironmentClassificationLoopFunctions::CEnvironmentClassificationLoopFunctions
 using namespace std;
 static const int maxTime = 200; /* Maximum amount of time per robot to wait until
 				   they received their ether */
-static const int maxContractAddressTrials = 300; /* Repeats getting the contract address procedure (sometimes the first result is a TypeError */
+static const int maxContractAddressTrials = 50; /* Repeats getting the contract address procedure (sometimes the first result is a TypeError */
 static const int trialsMiningNotWorking = 40; /* If after x trials the number of white votes is still zero  */
 
 std::string contractAddress;
@@ -517,7 +517,7 @@ void CEnvironmentClassificationLoopFunctions::PreallocateEther() {
 
     cout << "Coinbase address is " << coinbaseAddresses[robotId] << endl;
 
-    genesisBlockStream << removeSpace(coinbaseAddresses[robotId]) << ": {\n\"balance\": \"100000000000000000000000\"\n},";
+    genesisBlockStream << removeSpace(coinbaseAddresses[robotId]) << ": {\n\"balance\": \"10000000000000000000\"\n},";
 
   }
 

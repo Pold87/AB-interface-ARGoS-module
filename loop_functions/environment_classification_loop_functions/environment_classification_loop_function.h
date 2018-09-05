@@ -136,8 +136,8 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
   UInt32 byzantineRobotsInExplorationCounter[N_COL];
   UInt32 byzantineRobotsInDiffusionCounter[N_COL];
 	
-  /* When consensousReached is equal to the number of the colors the swarm reached a consensous */
-  UInt32 consensousReached;
+  /* When consensusReached is equal to the number of the colors the swarm reached a consensus */
+  UInt32 consensusReached;
 
   /* When true the experiment is not run. It could be true because of the incorrect number of robots
    * with an initial opinions (r_0+b_0 != number_of_robots) or because the percentages of colors of the
@@ -171,7 +171,7 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
   /* Parameters passed from configuration file */
   std::string passedRadix;
   UInt32 timeStep; // save statistics in everyTicksFile every <timeStep> ticks
-  UInt32 LAMDA,turn; // Parameters for the randomWalk: Lamda is the exponential mean and turn is the uniform parameter
+  UInt32 LAMBDA,turn; // Parameters for the randomWalk: Lambda is the exponential mean and turn is the uniform parameter
 
   UInt32 number_of_runs;
 
@@ -201,6 +201,7 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
   bool useClassicalApproach;
   int lengthOfRuns;
   bool subswarmConsensus;
+  bool colorMixing;
 };
 
 

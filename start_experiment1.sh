@@ -9,9 +9,9 @@ BASEDIR="$HOME/Documents/blockchain-journal-bc/controllers/epuck_environment_cla
 BLOCKCHAINPATH="$HOME/eth_data_para$1/data" # always without '/' at the end!!
 MINERID=$(expr 120 + $1)
 echo "MINERID is ${MINERID}"
-NUMROBOTS=(2)
-THRESHOLDS=(80000 60000 220000 240000) 
-REPETITIONS=20
+NUMROBOTS=(20)
+THRESHOLDS=(80000) 
+REPETITIONS=5
 DECISIONRULE=$3
 PERCENT_BLACKS=(40)
 MININGDIFF=1000000
@@ -30,10 +30,11 @@ REGENERATEFILE="$(pwd)/regenerate${USEDNODES[0]}.sh"
 # The miner node is the first of the used nodes
 MINERNODE=${USEDNODES[0]}
 USECLASSICALAPPROACH=false
-NUMBYZANTINE=(0)
-BYZANTINESWARMSTYLE=0
+NUMBYZANTINE=(0 1 2 3 4 5 6)
+BYZANTINESWARMSTYLE=1
 COLORMIXING="true" # mix or tiles or just have a binary field
 FLOODINGATTACK="true"
+JAMMINGATTACK="false"
 MAXFLOODING=20
 SUBSWARMCONSENSUS=false # Determines if all N robots have to agree or
 		       # only the beneficial subswarm.

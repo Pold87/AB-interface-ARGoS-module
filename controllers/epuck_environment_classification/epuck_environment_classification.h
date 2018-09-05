@@ -76,7 +76,7 @@ public:
 	    //	    int numByzantine;
 	    UInt32 numPackSaved;
 	    UInt32 status;
-	    UInt32 LAMDA, turn;
+	    UInt32 LAMBDA, turn;
 	    bool useClassicalApproach;
 	    UInt32 numRobots; /* total amount of robots in the experiment */
 	    bool floodingAttack;

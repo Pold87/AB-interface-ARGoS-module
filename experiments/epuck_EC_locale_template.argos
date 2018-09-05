@@ -21,12 +21,12 @@
 <controllers>
 
     <epuck_environment_classification_controller id="epc"
-     library="/home/vstrobel/Documents/col_estimation/build/controllers/epuck_environment_classification/libepuck_environment_classification.so">
+     library="/home/vstrobel/Documents/blockchain-journal-bc/build/controllers/epuck_environment_classification/libepuck_environment_classification.so">
      
       <actuators>
 	<epuck_wheels implementation="default" />
         <leds implementation="default" medium="leds" />
-        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.22" />
+        <epuck_range_and_bearing implementation="medium" medium="rab" range="0.50" />
       </actuators>
       <sensors>
         <!--epuck_motor_ground implementation="rot_z_only" /-->
@@ -39,7 +39,7 @@
      	<simulation_parameters g="10" 
    			       sigma="10"
 			       turn="45"
-			       lamda="100"
+			       lambda="100"
 			       exitFlag="true"
 			       profiling="true"
 			       decision_rule="DECISIONRULE"
@@ -54,6 +54,7 @@
 			       blockchain_path="BLOCKCHAINPATH"
 			       use_classical_approach="USECLASSICALAPPROACH"
 			       regenerate_file="REGENERATEFILE"
+			       flooding_attack="FLOODINGATTACK"
 			       max_flooding="MAXFLOODING"
 			       percent_black="PERCENT_BLACK"/> <!-- Sigma and G must be inserted in seconds, not in ticks; 
 							  1 = Voter model; 2 = Direct comparison; 3 = Majority Rule-->
@@ -61,7 +62,7 @@
       </params>
     </epuck_environment_classification_controller>
   </controllers>
- <loop_functions  library="/home/vstrobel/Documents/col_estimation/build/loop_functions/environment_classification_loop_functions/libenvironment_classification_loop_functions.so"
+ <loop_functions  library="/home/vstrobel/Documents/blockchain-journal-bc/build/loop_functions/environment_classification_loop_functions/libenvironment_classification_loop_functions.so"
                   label="environment_classification_loop_functions">
 
   <cells  number_of_red_cells="0"
@@ -74,8 +75,8 @@
 	  exit="true"            
 	  percent_black="PERCENT_BLACK"
 	  percent_red="0"
-	  save_every_ticks="10000000"
-	  save_every_ticks_flag="false"
+	  save_every_ticks="100"
+	  save_every_ticks_flag="true"
 	  save_every_run_flag="true"
 	  save_blockchain_flag="true"
 	  save_every_robot_flag="false"
@@ -91,7 +92,7 @@
 	  length_of_runs="450"
 	  g="10"
 	  sigma="10"
-	  lamda="100"
+	  lambda="100"
 	  turn="45"
 	  miningdiff="MININGDIFF"
 	  use_multiple_nodes="USEMULTIPLENODES"
@@ -104,6 +105,7 @@
 	  byzantine_swarm_style="BYZANTINESWARMSTYLE"
 	  subswarm_consensus="SUBSWARMCONSENSUS"
 	  regenerate_file="REGENERATEFILE"
+	  color_mixing="COLORMIXING"
 	  blockchain_path="BLOCKCHAINPATH"/>
 
   </loop_functions>

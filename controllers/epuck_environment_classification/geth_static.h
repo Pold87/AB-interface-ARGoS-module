@@ -102,7 +102,7 @@ std::string smartContractInterfaceCall(int i, std::string interface, std::string
 
 std::string smartContractInterfaceStringCall(int i, std::string interface, std::string contractAddress, std::string func, std::string args[], int argc, int v, int nodeInt, std::string datadirBase);
 
-void smartContractInterfaceBg(int i, std::string interface, std::string contractAddress, std::string func, int args[], int argc, int v, int nodeInt, std::string datadirBase);
+void smartContractInterfaceBg(int i, std::string interface, std::string contractAddress, std::string func, int args[], int argc, long long v, int nodeInt, std::string datadirBase);
 
 void smartContractInterfaceStringBg(int i, std::string interface, std::string contractAddress, std::string func, std::string args[], int argc, int v, int nodeInt, std::string datadirBase);
 

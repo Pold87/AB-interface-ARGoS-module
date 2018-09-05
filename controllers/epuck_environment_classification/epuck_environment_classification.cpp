@@ -321,6 +321,16 @@ string EPuck_Environment_Classification::getBlockChainSize() {
 void EPuck_Environment_Classification::Explore() {
 
   int robotId = Id2Int(GetId());
+
+  CCI_EPuckRangeAndBearingActuator::TData toSend;
+  toSend[0] = robotId;
+
+  /* 10 is for jamming */
+  if (byzantineStyle == 10) {
+    toSend[3] = 1;
+  } else {
+    toSend[3] = 0;
+  }
   
   /* remainingExplorationTime it's the variable decremented each control step. 
    * This variable represents the time that a robot must still spend in exploration state.
@@ -381,15 +391,19 @@ void EPuck_Environment_Classification::Explore() {
       votesFile << opinionInt << endl;
     }
 
-    long long ether = 5000000000000000000;
+    long long wei = 2000000000000000000;
     
-    string args[1] = {opinionInt};
-    smartContractInterfaceStringBg(robotId, interface, contractAddress, "vote", args, 1, ether, nodeInt, simulationParams.blockchainPath);
+    int args[1] = {opinionInt};
+    int argsEmpty[0] = {};
+    smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
 
+    smartContractInterfaceBg(robotId, interface,
+	 contractAddress, "askForPayout", args, 0, 0, nodeInt, simulationParams.blockchainPath);
+    
 
     if (byzantineStyle > 0 && simulationParams.floodingAttack) {
       for (int i = 0; i < simulationParams.maxFlooding; i++) {
-	smartContractInterfaceStringBg(robotId, interface, contractAddress, "vote", args, 1, ether, nodeInt, simulationParams.blockchainPath);
+	smartContractInterfaceBg(robotId, interface, contractAddress, "vote", argsEmpty, 0, wei, nodeInt, simulationParams.blockchainPath);
       }
     }
     
@@ -432,11 +446,18 @@ void EPuck_Environment_Classification::ConnectAndListen() {
   set<int> currentNeighbors;
 	
   const CCI_EPuckRangeAndBearingSensor::TPackets& tPackets = m_pcRABS->GetPackets();
-	
+
+  bool containedJammer = false;
   for(size_t i = 0; i < tPackets.size() ; ++i) {
-    currentNeighbors.insert(tPackets[i]->Data[0]);   	      
+    currentNeighbors.insert(tPackets[i]->Data[0]);
+    /* Check if there's a jammer */
+    if (tPackets[i]->Data[3] == 1)
+      containedJammer = true;
   }    
 
+  if (containedJammer)
+    currentNeighbors.clear();
+  
   /* Update Neighbors */
   UpdateNeighbors(currentNeighbors);
   m_pcRABS->ClearPackets();
