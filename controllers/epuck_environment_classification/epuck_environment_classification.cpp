@@ -354,7 +354,9 @@ void EPuck_Environment_Classification::Explore() {
    */
   else{
 
-
+    /* Calculate opinion ratio of white cells to total cells) */
+    opinion.quality = (Real)((Real)(opinion.countedCellOfActualOpinion)/(Real)(collectedData.count));    
+    
     /* If this robot is a Byzantine robot, it always uses quality estimate 1.0 */
     if (byzantineStyle == 1 || byzantineStyle == 11) {
       opinion.quality = 0.0;
@@ -378,10 +380,18 @@ void EPuck_Environment_Classification::Explore() {
     } else if (byzantineStyle == 4 || byzantineStyle == 14) {
       opinion.quality = m_pcRNG->Uniform(CRange<Real>(0.0,1.0));
 
+    } else if (byzantineStyle == 5 || byzantineStyle == 15) {
+      Real p = m_pcRNG->Gaussian(0.05, 0.0);
+      opinion.quality += p;
       
-    } else {
-      opinion.quality = (Real)((Real)(opinion.countedCellOfActualOpinion)/(Real)(collectedData.count));    
-    }
+      /* Constraint it between 0.0 and 1.0 */
+      if (opinion.quality > 1.0)
+	opinion.quality = 1.0;
+      
+      if (opinion.quality < 0.0)
+	opinion.quality = 0.0;      
+      
+    } 
 
     opinion.countedCellOfActualOpinion = 0;
     collectedData.count = 0;
