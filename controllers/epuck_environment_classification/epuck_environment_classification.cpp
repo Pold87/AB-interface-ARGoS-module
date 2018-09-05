@@ -322,15 +322,17 @@ void EPuck_Environment_Classification::Explore() {
 
   int robotId = Id2Int(GetId());
 
-  CCI_EPuckRangeAndBearingActuator::TData toSend;
-  toSend[0] = robotId;
 
-  /* 10 is for jamming */
-  if (byzantineStyle == 10) {
-    toSend[3] = 1;
-  } else {
-    toSend[3] = 0;
+  /* 20 is for jamming */
+  if (byzantineStyle == 20) {
+      CCI_EPuckRangeAndBearingActuator::TData toSend;
+      toSend[0] = robotId;
+      toSend[1] = 0;
+      toSend[2] = 0;      
+      toSend[3] = 1;
+      m_pcRABA->SetData(toSend);
   }
+
   
   /* remainingExplorationTime it's the variable decremented each control step. 
    * This variable represents the time that a robot must still spend in exploration state.
@@ -354,15 +356,15 @@ void EPuck_Environment_Classification::Explore() {
 
 
     /* If this robot is a Byzantine robot, it always uses quality estimate 1.0 */
-    if (byzantineStyle == 1) {
+    if (byzantineStyle == 1 || byzantineStyle == 11) {
       opinion.quality = 0.0;
 
       /* If this robot is a Byzantine robot, its quality estimate is
 	 drawn from a value between 0.0 and 1.0 */
-    } else if (byzantineStyle == 2) {
+    } else if (byzantineStyle == 2 || byzantineStyle == 12) {
       opinion.quality = 1.0;
 
-    } else if (byzantineStyle == 3) {
+    } else if (byzantineStyle == 3 || byzantineStyle == 13) {
 
       CRange<Real> zeroOne(0.0,1.0);
       Real p = m_pcRNG->Uniform(zeroOne);
@@ -373,7 +375,7 @@ void EPuck_Environment_Classification::Explore() {
 	opinion.quality = 1.0;
       }
 
-    } else if (byzantineStyle == 4) {
+    } else if (byzantineStyle == 4 || byzantineStyle == 14) {
       opinion.quality = m_pcRNG->Uniform(CRange<Real>(0.0,1.0));
 
       
@@ -401,9 +403,9 @@ void EPuck_Environment_Classification::Explore() {
 	 contractAddress, "askForPayout", args, 0, 0, nodeInt, simulationParams.blockchainPath);
     
 
-    if (byzantineStyle > 0 && simulationParams.floodingAttack) {
-      for (int i = 0; i < simulationParams.maxFlooding; i++) {
-	smartContractInterfaceBg(robotId, interface, contractAddress, "vote", argsEmpty, 0, wei, nodeInt, simulationParams.blockchainPath);
+    if (byzantineStyle > 10 && byzantineStyle < 20) {
+      for (int i = 0; i < simulationParams.maxFlooding - 1; i++) {
+	smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
       }
     }
     
@@ -548,6 +550,9 @@ void EPuck_Environment_Classification::fromLoopFunctionResPrepare(){
 
   CCI_EPuckRangeAndBearingActuator::TData toSend;
   toSend[0] = Id2Int(GetId());
+  toSend[1] = 0;
+  toSend[2] = 0;
+  toSend[3] = 0;
   m_pcRABA->SetData(toSend);
   m_pcRABS->ClearPackets();
   TurnLeds();
