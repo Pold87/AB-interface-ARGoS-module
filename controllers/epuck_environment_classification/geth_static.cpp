@@ -639,7 +639,7 @@ std::string smartContractInterface(int i, string interface, string contractAddre
     fullCommandStream << args[k] << ",";  
   }
   
-  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '70000000'});";
+  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '90000000'});";
   
   
   std::string fullCommand = fullCommandStream.str();
@@ -699,7 +699,7 @@ std::string smartContractInterfaceCall(int i, string interface, string contractA
     fullCommandStream << args[k] << ",";  
   }
   
-  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '70000000'});";
+  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '90000000'});";
   
   
   std::string fullCommand = fullCommandStream.str();
@@ -723,7 +723,7 @@ std::string smartContractInterfaceStringCall(int i, std::string interface, std::
     fullCommandStream << args[k] << ",";  
   }
   
-  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '70000000'});";
+  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '90000000'});";
   
   
   std::string fullCommand = fullCommandStream.str();
@@ -751,7 +751,7 @@ void smartContractInterfaceBg(int i, string interface, string contractAddress,
     fullCommandStream << args[k] << ",";  
   }
   
-  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '70000000'});";
+  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '90000000'});";
   
   
   std::string fullCommand = fullCommandStream.str();
@@ -779,7 +779,7 @@ void smartContractInterfaceStringBg(int i, string interface, string contractAddr
     fullCommandStream << args[k] << ",";  
   }
   
-  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '70000000'});";
+  fullCommandStream << "{" << "value: " << v << ", from: eth.coinbase, gas: '90000000'});";
   
   
   std::string fullCommand = fullCommandStream.str();

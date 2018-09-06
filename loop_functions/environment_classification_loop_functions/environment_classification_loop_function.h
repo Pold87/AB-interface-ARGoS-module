@@ -202,6 +202,7 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
   int lengthOfRuns;
   bool subswarmConsensus;
   bool colorMixing;
+  bool determineConsensus;
 };
 
 

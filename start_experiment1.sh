@@ -30,16 +30,26 @@ REGENERATEFILE="$(pwd)/regenerate${USEDNODES[0]}.sh"
 # The miner node is the first of the used nodes
 MINERNODE=${USEDNODES[0]}
 USECLASSICALAPPROACH=false
-NUMBYZANTINE=(0 1 2 3 4 5 6)
-BYZANTINESWARMSTYLE=1
-COLORMIXING="true" # mix or tiles or just have a binary field
-FLOODINGATTACK="true"
-JAMMINGATTACK="false"
+DETERMINECONSENSUS="false"
+NUMBYZANTINE=(3 4 5 )
+
+# 1: Always send 0.0 as value
+# 2: Always send 1.0 as value
+# 3: Send 0.0 with probabiity 0.5, send 1.0 else
+# 4: Send a random number between 0.0 and 1.0
+# 5: Send the true value but apply Gaussian noise to the sensor readings
+# 11: Perform a Sybil and flooding attack, always send 0.0 as value
+# 12: Perform a Sybil and flooding attack, always send 1.0 as value
+# 13: Perform a Sybil and flooding attack, send 0.0 with probabiity 0.5, send 1.0 else
+# 14: Perform a Sybil and flooding attack, send a random number between 0.0 and 1.0
+# 15: Perform a Sybil and flooding attack, send the true value but with some Gaussian noise
+# 20: Perform a jamming attack
+
+BYZANTINESWARMSTYLES=( 1 )
+MIXINGS=("true")  # mix or tiles or just have a binary field
 MAXFLOODING=20
 SUBSWARMCONSENSUS=false # Determines if all N robots have to agree or
 		       # only the beneficial subswarm.
-
-DATADIRBASE="data/experiment1_decision${DECISIONRULE}_flooding${FLOODINGATTACK}_mixing${COLORMIXING}-node$1-${NOW}/"
 
 if [ "$USECLASSICALAPPROACH" == "true" ]; then
     REALTIME="false"
@@ -60,6 +70,10 @@ fi
 
 	 for THRESHOLD in "${THRESHOLDS[@]}"; do
 
+	     for MIXING in "${MIXINGS[@]}"; do
+
+		 for BYZANTINESWARMSTYLE in "${BYZANTINESWARMSTYLES[@]}"; do
+		     DATADIRBASE="data/experiment1_decision3_mixing${MIXING}_byzstyle${BYZANTINESWARMSTYLE}-node$1-${NOW}/"		     
 
 	     DATADIR="${DATADIRBASE}${THRESHOLD}/"
 	     mkdir -p $DATADIR
@@ -109,7 +123,7 @@ fi
 	cp Estimation.abi "${BASEDIR}/interface$1.txt"	      
 	
 	# Create template
-	sed -e "s|BASEDIR|$BASEDIR|g" -e "s|NUMRUNS|$NUMRUNS|g" -e "s|DATADIR|$DATADIR|g" -e "s|RADIX|$RADIX|g" -e "s|NUMROBOTS|$k|g" -e "s|R0|$R0|g" -e "s|B0|$B0|g" -e "s|PERCENT_BLACK|$PERCENT_BLACK|g" -e "s|PERCENT_WHITE|$PERCENT_WHITE|g" -e "s|DECISIONRULE|$DECISIONRULE|g" -e "s|USEMULTIPLENODES|$USEMULTIPLENODES|g" -e "s|MININGDIFF|$MININGDIFF|g" -e "s|MINERNODE|$MINERNODE|g" -e "s|MINERID|$MINERID|g" -e "s|BASEPORT|$BASEPORT|g" -e "s|USEBACKGROUNDGETHCALLS|$USEBACKGROUNDGETHCALLS|g" -e "s|BLOCKCHAINPATH|$BLOCKCHAINPATH|g" -e "s|MAPPINGPATH|$MAPPINGPATH|g" -e "s|THREADS|$THREADS|g" -e "s|USECLASSICALAPPROACH|$USECLASSICALAPPROACH|g" -e "s|NUMBYZANTINE|$y|g" -e "s|BYZANTINESWARMSTYLE|$BYZANTINESWARMSTYLE|g" -e "s|SUBSWARMCONSENSUS|$SUBSWARMCONSENSUS|g" -e "s|REGENERATEFILE|$REGENERATEFILE|g" -e "s|REALTIME|$REALTIME|g" -e "s|FLOODINGATTACK|$FLOODINGATTACK|g" -e "s|MAXFLOODING|$MAXFLOODING|g" -e "s|COLORMIXING|$COLORMIXING|g" $TEMPLATE > $OUTFILE
+	sed -e "s|BASEDIR|$BASEDIR|g" -e "s|NUMRUNS|$NUMRUNS|g" -e "s|DATADIR|$DATADIR|g" -e "s|RADIX|$RADIX|g" -e "s|NUMROBOTS|$k|g" -e "s|R0|$R0|g" -e "s|B0|$B0|g" -e "s|PERCENT_BLACK|$PERCENT_BLACK|g" -e "s|PERCENT_WHITE|$PERCENT_WHITE|g" -e "s|DECISIONRULE|$DECISIONRULE|g" -e "s|USEMULTIPLENODES|$USEMULTIPLENODES|g" -e "s|MININGDIFF|$MININGDIFF|g" -e "s|MINERNODE|$MINERNODE|g" -e "s|MINERID|$MINERID|g" -e "s|BASEPORT|$BASEPORT|g" -e "s|USEBACKGROUNDGETHCALLS|$USEBACKGROUNDGETHCALLS|g" -e "s|BLOCKCHAINPATH|$BLOCKCHAINPATH|g" -e "s|MAPPINGPATH|$MAPPINGPATH|g" -e "s|THREADS|$THREADS|g" -e "s|USECLASSICALAPPROACH|$USECLASSICALAPPROACH|g" -e "s|NUMBYZANTINE|$y|g" -e "s|BYZANTINESWARMSTYLE|$BYZANTINESWARMSTYLE|g" -e "s|SUBSWARMCONSENSUS|$SUBSWARMCONSENSUS|g" -e "s|REGENERATEFILE|$REGENERATEFILE|g" -e "s|REALTIME|$REALTIME|g" -e "s|FLOODINGATTACK|$FLOODINGATTACK|g" -e "s|MAXFLOODING|$MAXFLOODING|g" -e "s|MIXING|$MIXING|g" -e "s|DETERMINECONSENSUS|$DETERMINECONSENSUS|g" $TEMPLATE > $OUTFILE
 	
 	# Start experiment
 	argos3 -c $OUTFILE
@@ -118,6 +132,7 @@ fi
 	    
 	    # Clean up
 	    bash "${BLOCKCHAINPATH}/bckillerccall"
+	    bash killblockchainallpara 0 1
 	    #mkdir -p "${DATADIR}${p}-${i}"
 	    #mv "${BLOCKCHAINPATH}"* "${DATADIR}${p}-${i}"
 	    rm -rf "${BLOCKCHAINPATH}"*
@@ -128,6 +143,10 @@ fi
 	 done
 	     done
 	 
+		 done
+
+	     done
+
 	 done
     
      done

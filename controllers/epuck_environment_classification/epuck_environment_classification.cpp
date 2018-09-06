@@ -77,8 +77,8 @@ void EPuck_Environment_Classification::SimulationState::Init(TConfigurationNode&
     GetNodeAttribute(t_node, "use_classical_approach", useClassicalApproach);
     GetNodeAttribute(t_node, "regenerate_file", regenerateFile);
     GetNodeAttribute(t_node, "profiling", profiling);
-    GetNodeAttribute(t_node, "flooding_attack", floodingAttack);
     GetNodeAttribute(t_node, "max_flooding", maxFlooding);
+    GetNodeAttribute(t_node, "determine_consensus", determineConsensus);
   }
   catch(CARGoSException& ex) {
     THROW_ARGOSEXCEPTION_NESTED("Error initializing controller state parameters.", ex);
@@ -403,7 +403,7 @@ void EPuck_Environment_Classification::Explore() {
       votesFile << opinionInt << endl;
     }
 
-    long long wei = 2000000000000000000;
+    long long wei = 4000000000000000000;
     
     int args[1] = {opinionInt};
     int argsEmpty[0] = {};
@@ -477,11 +477,15 @@ void EPuck_Environment_Classification::ConnectAndListen() {
 
 void EPuck_Environment_Classification::Diffusing() {
 
-  /* Query consensous reached */
-  if (!threadCurrentlyRunning){
-    threadCurrentlyRunning = true;
-    thread t1(&EPuck_Environment_Classification::WaitForDecision, this);
-    t1.detach();
+
+  if (simulationParams.determineConsensus) {
+  
+    /* Query consensous reached */
+    if (!threadCurrentlyRunning){
+      threadCurrentlyRunning = true;
+      thread t1(&EPuck_Environment_Classification::WaitForDecision, this);
+      t1.detach();
+    }    
   }
   
   /* Change to EXPLORING state and choose another opinion with decision rules */

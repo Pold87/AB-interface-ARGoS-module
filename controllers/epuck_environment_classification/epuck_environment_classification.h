@@ -79,8 +79,8 @@ public:
 	    UInt32 LAMBDA, turn;
 	    bool useClassicalApproach;
 	    UInt32 numRobots; /* total amount of robots in the experiment */
-	    bool floodingAttack;
 	    int maxFlooding;
+	    bool determineConsensus;
 	     void Init(TConfigurationNode& t_node);
 	  };
 

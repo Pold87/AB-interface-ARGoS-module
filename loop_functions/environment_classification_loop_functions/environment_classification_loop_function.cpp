@@ -93,6 +93,7 @@ void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& t
       GetNodeAttribute(tEnvironment, "regenerate_file", regenerateFile);
       GetNodeAttribute(tEnvironment, "length_of_runs", lengthOfRuns);
       GetNodeAttribute(tEnvironment, "color_mixing", colorMixing);
+      GetNodeAttribute(tEnvironment, "determine_consensus", determineConsensus);
     }
   catch(CARGoSException& ex) {
     THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
@@ -1078,19 +1079,23 @@ void CEnvironmentClassificationLoopFunctions::PreStep() {
   
   /* Check if a consensus has been reached (i.e., SE is below threshold) */
 
-  bool totalConsensusReached = true; 
-  for(CSpace::TMapPerType::iterator it = m_cEpuck.begin();it != m_cEpuck.end();++it){
-    /* Get handle to e-puck entity and controller */
-    CEPuckEntity& cEpuck = *any_cast<CEPuckEntity*>(it->second);
-    
-    EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
-    totalConsensusReached = totalConsensusReached && cController.getConsensusReached();    
-  }
 
-  if (totalConsensusReached) {
-    consensusReached = 100;
-  }
+  if (determineConsensus) {
   
+    bool totalConsensusReached = true; 
+    for(CSpace::TMapPerType::iterator it = m_cEpuck.begin();it != m_cEpuck.end();++it){
+      /* Get handle to e-puck entity and controller */
+      CEPuckEntity& cEpuck = *any_cast<CEPuckEntity*>(it->second);
+      
+      EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
+      totalConsensusReached = totalConsensusReached && cController.getConsensusReached();    
+    }
+    
+    if (totalConsensusReached) {
+      consensusReached = 100;
+    }
+  
+  }
   
   /* EVERYTICKSFILE: Write this statistics only if the file is open and it's the right timeStep (multiple of timeStep) */
   if ( ! (GetSpace().GetSimulationClock() % timeStep) ) {

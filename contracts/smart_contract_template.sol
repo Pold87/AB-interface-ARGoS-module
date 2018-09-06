@@ -1,8 +1,8 @@
 pragma solidity ^0.4.0;
 contract Estimation {
 
-int public mean;
-uint public F = 1;
+int public mean = 6000000;
+uint public F =2;
 int public count = 0;
 int public threshold = 140000;
 int public m2;
@@ -57,7 +57,7 @@ function getBlockNumber() public constant returns (uint) {
 
 function askForPayout() public {
 
-  if (latest_payout > (block.number - 2)) {
+  if (latest_payout > (block.number - 3)) {
     revert();
   }
 
@@ -67,7 +67,7 @@ function askForPayout() public {
 
     /* Find out which votes are old enough */
     for (uint a = 0; a < allVotes.length; a++) {
-        if (allVotes[a].blockNumber < block.number - 2) {
+        if (allVotes[a].blockNumber < block.number - 3) {
 	  
 	      allVotes[a].diff = abs(mean - allVotes[a].quality);
 	      
@@ -142,14 +142,14 @@ function askForPayout() public {
       ripedVotesGreater[z].robot.send(payoutPerRobot);
       int deltaGreater = ripedVotesGreater[z].quality - mean;
       count = count + 1;
-      mean += mean + (deltaGreater / count);
+      mean += (deltaGreater / count);
     }
 
     for (uint r = 0; r < ripedVotesSmaller.length; r++) {
       ripedVotesSmaller[r].robot.send(payoutPerRobot);
       int deltaSmaller = ripedVotesSmaller[r].quality - mean;
       count = count + 1;
-      mean += mean + (deltaSmaller / count);
+      mean += (deltaSmaller / count);
     }
 
 
@@ -176,7 +176,7 @@ function getSenderBalance() public constant returns (uint) {
 
  function vote(int x_n) public payable {
 
-    if (msg.value < 2 ether)
+    if (msg.value < 4 ether)
         revert();
 
     votingInformation memory vi = votingInformation(msg.sender, x_n, 0, block.number, msg.sender.balance, msg.value);
