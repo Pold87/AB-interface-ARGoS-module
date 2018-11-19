@@ -203,6 +203,7 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
   bool subswarmConsensus;
   bool colorMixing;
   bool determineConsensus;
+  bool distributeEther;
 };
 
 

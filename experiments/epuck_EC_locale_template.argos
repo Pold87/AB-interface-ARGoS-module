@@ -56,7 +56,8 @@
 			       regenerate_file="REGENERATEFILE"
 			       max_flooding="MAXFLOODING"
 			       percent_black="PERCENT_BLACK"
-			       determine_consensus="DETERMINECONSENSUS"/> <!-- Sigma and G must be inserted in seconds, not in ticks; 
+			       determine_consensus="DETERMINECONSENSUS"
+			       distribute_ether="DISTRIBUTEETHER"/> <!-- Sigma and G must be inserted in seconds, not in ticks; 
 							  1 = Voter model; 2 = Direct comparison; 3 = Majority Rule-->
  
       </params>

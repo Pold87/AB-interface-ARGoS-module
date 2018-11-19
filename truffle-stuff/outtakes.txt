@@ -1,0 +1,16 @@
+
+		/* Mine block if necessary */
+		if (row.data[0][2] > currentBlock) {
+		    currentBlock = row.data[0][2];
+
+		    web3.currentProvider.sendAsync({
+			jsonrpc: "2.0",
+			method: "evm_mine",
+			id: 12345
+		    }, function(err, result) {});		    
+		}
+
+		estimation.vote(row.data[0][1], {from: accounts[row.data[0][0]], value: 40000000000000000000});
+		
+	    }
+	});

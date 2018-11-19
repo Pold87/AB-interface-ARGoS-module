@@ -2,7 +2,6 @@ pragma solidity ^0.4.0;
 contract Estimation {
 
 int public mean = 5000000;
-uint public F = 4;
 int public count = 0;
 int public threshold = 140000;
 int public m2;
@@ -39,7 +38,6 @@ function abs(int x) internal pure returns (int y) {
 function getBalance() public constant returns (uint) {
     return address(this).balance;
 }
-
 
 function getBlockNumber() public constant returns (uint) {
     return block.number;
@@ -96,16 +94,14 @@ function askForPayout() public {
     payoutPerRobot = (totalPayout - 10000000) / (ripedVotes.length / 2);
   }
 
-  if (totalPayout > 0) {
+    if (totalPayout > 0) {
       for (uint z = 0; z < ripedVotes.length / 2; z++) {
 
 	int delta = ripedVotes[z].quality - mean;
 	int w_n = int(ripedVotes[z].weight);
 	W_n = W_n + w_n;
-	mean = mean + (w_n * delta) / W_n;
-	count = count + 1;	
-	//	count = count + 1;
-	//mean += (delta / count);
+	mean = mean + (w_n * delta) / W_n;	
+	count = count + 1;
 	ripedVotes[z].robot.send(payoutPerRobot);
       }
     }
