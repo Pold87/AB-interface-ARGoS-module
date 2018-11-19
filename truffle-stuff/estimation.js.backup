@@ -1,0 +1,173 @@
+var Estimation = artifacts.require("./Estimation.sol");
+var Papa = require('papaparse');
+var path = process.cwd;
+var fs = require("fs");
+var file = fs.readFileSync("/Users/volkerstrobel/Documents/mygithub-software/blockchain-journal-bc/truffle-stuff/test/myfile.csv", { encoding: 'binary' });
+
+
+Papa.parse(file, {
+    step: function(row){
+        console.log("Row: ", row.data[0][0]);
+    }
+});
+
+contract('Estimation', function(accounts) {
+
+  var account_one = accounts[0];
+  var account_two = accounts[1];
+
+    
+  it("Make same transactions", function() {
+    return Estimation.deployed().then(function(instance) {
+
+      estimation = instance;
+    	estimation.vote(0000000, {from: accounts[1], value: 40000000000000000000});
+      estimation.vote(0000000, {from: accounts[2], value: 40000000000000000000});
+      estimation.vote(0000000, {from: accounts[3], value: 40000000000000000000});
+      estimation.vote(4000000, {from: accounts[4], value: 40000000000000000000});
+      estimation.vote(5000000, {from: accounts[5], value: 40000000000000000000});
+      estimation.vote(5500000, {from: accounts[6], value: 40000000000000000000});
+      estimation.vote(7000000, {from: accounts[7], value: 40000000000000000000});
+      estimation.vote(8000000, {from: accounts[8], value: 40000000000000000000});
+      estimation.vote(9000000, {from: accounts[9], value: 40000000000000000000});
+    }).then(function() {
+      web3.currentProvider.sendAsync({
+        jsonrpc: "2.0",
+        method: "evm_mine",
+        id: 12345
+      }, function(err, result) {});
+      web3.currentProvider.sendAsync({
+        jsonrpc: "2.0",
+        method: "evm_mine",
+        id: 12345
+      }, function(err, result) {});
+      web3.currentProvider.sendAsync({
+        jsonrpc: "2.0",
+        method: "evm_mine",
+        id: 12345
+      }, function(err, result) {});
+      return estimation.getBlockNumber();
+    }).then(function(blockNumber) {
+        console.log(blockNumber.toNumber());
+        estimation.askForPayout();
+    }).then(function() {
+        return estimation.getCount();
+  }).then(function(count) {
+    console.log(count.toNumber());
+        return estimation.getMean();
+  }).then(function (mean) {
+    console.log(mean.toNumber());
+  }).then(function () {
+    estimation.vote(0000000, {from: accounts[1], value: 40000000000000000000});
+    estimation.vote(0000000, {from: accounts[2], value: 40000000000000000000});
+    estimation.vote(0000000, {from: accounts[3], value: 40000000000000000000});
+    estimation.vote(0000000, {from: accounts[4], value: 40000000000000000000});
+    estimation.vote(5000000, {from: accounts[5], value: 40000000000000000000});
+    estimation.vote(5500000, {from: accounts[6], value: 40000000000000000000});
+    estimation.vote(7000000, {from: accounts[7], value: 40000000000000000000});
+    estimation.vote(8000000, {from: accounts[8], value: 40000000000000000000});
+    estimation.vote(9000000, {from: accounts[9], value: 40000000000000000000});
+  }).then(function() {
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    return estimation.getBlockNumber();
+  }).then(function(blockNumber) {
+      console.log(blockNumber.toNumber());
+      estimation.askForPayout();
+  }).then(function() {
+      return estimation.getCount();
+}).then(function(count) {
+  console.log(count.toNumber());
+      return estimation.getMean();
+}).then(function (mean) {
+  console.log(mean.toNumber());
+  }).then(function () {
+
+    for(var j = 1; j < 9; j++) {
+      console.log(web3.eth.getBalance(accounts[j]).toNumber())
+    //create parameters for function
+    if (web3.eth.getBalance(accounts[j])> 40000000000000000000) {
+      console.log("I still have enough")
+      estimation.vote(10000000, {from: accounts[j], value: 40000000000000000000});
+      }
+    }
+  }).then(function() {
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    return estimation.getBlockNumber();
+  }).then(function(blockNumber) {
+      console.log(blockNumber.toNumber());
+      estimation.askForPayout();
+  }).then(function() {
+      return estimation.getCount();
+}).then(function(count) {
+  console.log(count.toNumber());
+      return estimation.getMean();
+}).then(function (mean) {
+  console.log(mean.toNumber());
+ }).then(function () {
+
+    for(var j = 1; j < 9; j++) {
+      console.log(web3.eth.getBalance(accounts[j]).toNumber())
+    //create parameters for function
+    if (web3.eth.getBalance(accounts[j])> 40000000000000000000) {
+      console.log("I still have enough")
+      estimation.vote(10000000, {from: accounts[j], value: 40000000000000000000});
+      }
+    }
+  }).then(function() {
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    web3.currentProvider.sendAsync({
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 12345
+    }, function(err, result) {});
+    return estimation.getBlockNumber();
+  }).then(function(blockNumber) {
+      console.log(blockNumber.toNumber());
+      estimation.askForPayout();
+  }).then(function() {
+      return estimation.getCount();
+}).then(function(count) {
+  console.log(count.toNumber());
+      return estimation.getMean();
+}).then(function (mean) {
+  console.log(mean.toNumber());
+ });
+});
+});
