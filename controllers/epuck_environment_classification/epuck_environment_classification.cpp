@@ -127,7 +127,7 @@ void EPuck_Environment_Classification::Init(TConfigurationNode& t_node) {
   simulationParams.percentRed = simulationParams.percentRed / 100;
 
   string allVotesFile = "allVotes.txt";
-  votesFile.open(allVotesFile.c_str(), std::ios_base::trunc | std::ios_base::out);
+  votesFile.open(allVotesFile.c_str(), std::ios_base::out | std::ios_base::app);
   
 }
 
@@ -399,14 +399,16 @@ void EPuck_Environment_Classification::Explore() {
 
     uint opinionInt = (uint) (opinion.quality * 10000000); // Convert opinion quality to a value between 0 and 10000000
 
+    int argsEmpty[0] = {};
+    
     if (votesFile.is_open()) {
-      votesFile << opinionInt << endl;
+      string blockNum = smartContractInterfaceCall(robotId, interface, contractAddress, "getBlockNumber", argsEmpty, 0, 0, nodeInt, simulationParams.blockchainPath);
+      votesFile << robotId << "," << opinionInt << "," << blockNum << endl;      
     }
 
     long long wei = 4000000000000000000;
     
     int args[1] = {opinionInt};
-    int argsEmpty[0] = {};
     smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
 
     smartContractInterfaceBg(robotId, interface,
@@ -456,7 +458,12 @@ void EPuck_Environment_Classification::ConnectAndListen() {
 
   int robotId = Id2Int(GetId());
   set<int> currentNeighbors;
-	
+
+
+  //for (UInt8 i = 0; i <= 19; i++) {
+  //  currentNeighbors.insert(i);
+  //}
+  
   const CCI_EPuckRangeAndBearingSensor::TPackets& tPackets = m_pcRABS->GetPackets();
 
   bool containedJammer = false;

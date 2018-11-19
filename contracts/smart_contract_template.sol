@@ -1,29 +1,26 @@
 pragma solidity ^0.4.0;
 contract Estimation {
 
-int public mean = 6000000;
-uint public F =2;
+int public mean = 5000000;
 int public count = 0;
 int public threshold = 140000;
 int public m2;
 int public numCurrentVotes = 0;
-uint savedMoney = 0;
-uint public latest_payout = 0;
-int W_n;
+int public NEEDEDVOTES = 20;
+uint public localCount = 0;
+int W_n = 0;
 
 struct votingInformation {
     address robot;
     int quality;
-    int diff;
     uint blockNumber;
     uint weight;
     uint money;
+  int diff;
   }
 
 votingInformation[] allVotes;
 votingInformation[] ripedVotes;
-votingInformation[] ripedVotesGreater;
-votingInformation[] ripedVotesSmaller;
 votingInformation[] youngVotes;
 votingInformation[] newVotes;
 mapping(address => int) public payoutForAddress;
@@ -57,115 +54,73 @@ function getBlockNumber() public constant returns (uint) {
 
 function askForPayout() public {
 
-  if (latest_payout > (block.number - 3)) {
-    revert();
-  }
+    if (localCount < 10) {
+        revert();
+    }
 
     uint totalPayout = 0;
-    totalPayout += savedMoney;
-    savedMoney = 0;
 
     /* Find out which votes are old enough */
+    int totalVotesToConsider = 0;
     for (uint a = 0; a < allVotes.length; a++) {
-        if (allVotes[a].blockNumber < block.number - 3) {
-	  
-	      allVotes[a].diff = abs(mean - allVotes[a].quality);
-	      
-	    if (allVotes[a].quality > mean) {
-	      ripedVotesGreater.push(allVotes[a]);
-	    } else {
-	      ripedVotesSmaller.push(allVotes[a]);
-	    }
-
-        totalPayout += allVotes[a].money;
+        if (allVotes[a].blockNumber < block.number - 5) {
+            totalVotesToConsider += 1;
+	    allVotes[a].diff = abs(mean - allVotes[a].quality);
+            ripedVotes.push(allVotes[a]);
+            totalPayout += allVotes[a].money;
     } else {
             youngVotes.push(allVotes[a]);
         }
     }
 
-    uint j;
-    /* Sort greater than (in ascending order) */
-    for (uint i = 0; i < ripedVotesGreater.length; i++){
-        votingInformation memory vi = ripedVotesGreater[i];
-        j = i;
+    /* Sort riped votes  */
+    for (uint i = 0; i < ripedVotes.length; i++){
+        votingInformation memory vi = ripedVotes[i];
+        uint j = i;
 
-        while (j > 0 && ripedVotesGreater[j-1].quality > vi.quality) {
-            ripedVotesGreater[j] = ripedVotesGreater[j - 1];
+        while (j > 0 && ripedVotes[j-1].diff > vi.diff) {
+            ripedVotes[j] = ripedVotes[j - 1];
             j -= 1;
         }
-        ripedVotesGreater[j] = vi;
+        ripedVotes[j] = vi;
     }
-
-
-    /* Sort smaller than (in descending order) */
-    for (uint d = 0; d < ripedVotesSmaller.length; d++){
-        votingInformation memory vi2 = ripedVotesSmaller[d];
-        j = d;
-
-        while (j > 0 && ripedVotesSmaller[j - 1].quality < vi2.quality) {
-            ripedVotesSmaller[j] = ripedVotesSmaller[j - 1];
-            j -= 1;
-        }
-        ripedVotesSmaller[j] = vi2;
-    }
-
-
-    if (ripedVotesGreater.length < F) {
-      delete ripedVotesGreater;
-    } else {
-      ripedVotesGreater.length = ripedVotesGreater.length - F;
-    }
-
-    if (ripedVotesSmaller.length < F) {
-      delete ripedVotesSmaller;
-    } else {
-      ripedVotesSmaller.length = ripedVotesSmaller.length - F;
-    }
-
 
   uint payoutPerRobot;
   if (totalPayout == 0) {
     payoutPerRobot = 0;
-  } else if (ripedVotesGreater.length + ripedVotesSmaller.length == 0){
-    payoutPerRobot = 0;
-    savedMoney = totalPayout;
-  } else if (totalPayout == 1) {
-    payoutPerRobot = totalPayout;
+  } else if (totalVotesToConsider == 1) {
+    payoutPerRobot = totalPayout - 10000000;
   } else {
-    payoutPerRobot = totalPayout / (ripedVotesGreater.length + ripedVotesSmaller.length);
+    payoutPerRobot = (totalPayout - 10000000) / (ripedVotes.length / 2);
   }
 
+    if (totalPayout > 0) {
+      for (uint z = 0; z < ripedVotes.length / 2; z++) {
 
-  if (totalPayout > 0) {
+	int delta = ripedVotes[z].quality - mean;
+	int w_n = int(ripedVotes[z].weight);
+	W_n = W_n + w_n;
+	mean = mean + (w_n * delta) / W_n;
+	count = count + 1;
 
-    for (uint z = 0; z < ripedVotesGreater.length; z++) {
-      ripedVotesGreater[z].robot.send(payoutPerRobot);
-      int deltaGreater = ripedVotesGreater[z].quality - mean;
-      count = count + 1;
-      mean += (deltaGreater / count);
-    }
-
-    for (uint r = 0; r < ripedVotesSmaller.length; r++) {
-      ripedVotesSmaller[r].robot.send(payoutPerRobot);
-      int deltaSmaller = ripedVotesSmaller[r].quality - mean;
-      count = count + 1;
-      mean += (deltaSmaller / count);
-    }
-
-
+	
+	//	count = count + 1;
+	//mean += (delta / count);
+	ripedVotes[z].robot.send(payoutPerRobot);
+      }
     }
    delete ripedVotes;
-   delete ripedVotesGreater;
-   delete ripedVotesSmaller;
+
    delete allVotes;
 
    for (uint h = 0; h < youngVotes.length; h++) {
      allVotes.push(youngVotes[h]);
    }
 
+   localCount = youngVotes.length;
+   
    delete youngVotes;
 
-   latest_payout = block.number;
 
  }
 
@@ -179,9 +134,12 @@ function getSenderBalance() public constant returns (uint) {
     if (msg.value < 4 ether)
         revert();
 
-    votingInformation memory vi = votingInformation(msg.sender, x_n, 0, block.number, msg.sender.balance, msg.value);
+    localCount = localCount + 1;	
 
-    allVotes.push(vi);
+   votingInformation memory vi = votingInformation(msg.sender, x_n, block.number, msg.sender.balance, msg.value, 0);
+
+   allVotes.push(vi);
+
  }
 
  function getMean() public constant returns (int) {

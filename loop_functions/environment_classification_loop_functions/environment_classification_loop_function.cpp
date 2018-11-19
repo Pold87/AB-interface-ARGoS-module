@@ -94,6 +94,7 @@ void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& t
       GetNodeAttribute(tEnvironment, "length_of_runs", lengthOfRuns);
       GetNodeAttribute(tEnvironment, "color_mixing", colorMixing);
       GetNodeAttribute(tEnvironment, "determine_consensus", determineConsensus);
+      GetNodeAttribute(tEnvironment, "distribute_ether", distributeEther);
     }
   catch(CARGoSException& ex) {
     THROW_ARGOSEXCEPTION_NESTED("Error parsing loop functions!", ex);
