@@ -62,26 +62,17 @@ public:
 	    Real sigma;
 	    bool exitFlag;
 	    bool profiling;
-	    bool useMultipleNodes;
-	    bool useBackgroundGethCalls;
 	    std::string radix;
 	    std::string baseDir; /* Basedir of the controller folder */
-	    std::string interfacePath;
-	    std::string mappingPath;
-	    std::string regenerateFile;
-	    //	    std::string mappingByzantinePath;
-	    std::string blockchainPath;
 	    std::string datadirBase;
 	    int basePort;
-	    //	    int numByzantine;
 	    UInt32 numPackSaved;
 	    UInt32 status;
 	    UInt32 LAMBDA, turn;
 	    bool useClassicalApproach;
-	    UInt32 numRobots; /* total amount of robots in the experiment */
 	    int maxFlooding;
 	    bool determineConsensus;
-	     void Init(TConfigurationNode& t_node);
+	    void Init(TConfigurationNode& t_node);
 	  };
 
 	  struct SStateData {
@@ -110,15 +101,13 @@ public:
    virtual void ControlStep();
    virtual void RandomWalk();
    virtual void Reset() {};
-   void fromLoopFunctionResPrepare();
-   void fromLoopFunctionResStart();
-   void killGethAndRemoveFolders(std::string bcPath, std::string regenFile);
    void Explore();
    void Diffusing();   
    void Listening();
    void ConnectAndListen();
    void Move();
    void TurnLeds();
+   void prepare();
    Real ExponentialFormula(Real mean){
 
 	   CRange<Real> cRange(0.0,1.0);
@@ -188,13 +177,10 @@ public:
    }
    
    void UpdateNeighbors(std::set<int> newNeighbors);
-   std::string getBlockChainSize();
 
 private:
 
    void WaitForDecision();
-   void readNodeMapping();
-   
    CCI_EPuckWheelsActuator* m_pcWheels;
    Real m_fWheelVelocity;
    CCI_EPuckRangeAndBearingActuator*  m_pcRABA;
@@ -220,11 +206,9 @@ private:
    std::string address;
    std::string minerAddress;
    std::string contractAddress;
-   std::string rawTx;
    std::set<int> neighbors;
    std::string enode;
    std::ofstream votesFile;
-
    std::string blockchainPath;
    blockWithHash bwh;
    bool beginning;

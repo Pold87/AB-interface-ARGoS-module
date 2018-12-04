@@ -20,7 +20,6 @@ using namespace std;
 
 map<int, string> enodes;
 map<int, string> coinbaseAddresses;
-string interface; // Smart contract interface
 
 /* Convert a number to a string */
 template <typename T> std::string NumberToString ( T Number )
@@ -68,14 +67,8 @@ void EPuck_Environment_Classification::SimulationState::Init(TConfigurationNode&
     GetNodeAttribute(t_node, "percent_black", percentBlue);
     GetNodeAttribute(t_node, "num_pack_saved", numPackSaved);
     GetNodeAttribute(t_node, "base_dir", baseDir);
-    GetNodeAttribute(t_node, "interface_path", interfacePath);
-    GetNodeAttribute(t_node, "mapping_path", mappingPath);
-    GetNodeAttribute(t_node, "use_multiple_nodes", useMultipleNodes);
-    GetNodeAttribute(t_node, "use_background_geth_calls", useBackgroundGethCalls);
-    GetNodeAttribute(t_node, "blockchain_path", blockchainPath);
     GetNodeAttribute(t_node, "base_port", basePort);
     GetNodeAttribute(t_node, "use_classical_approach", useClassicalApproach);
-    GetNodeAttribute(t_node, "regenerate_file", regenerateFile);
     GetNodeAttribute(t_node, "profiling", profiling);
     GetNodeAttribute(t_node, "max_flooding", maxFlooding);
     GetNodeAttribute(t_node, "determine_consensus", determineConsensus);
@@ -117,36 +110,13 @@ void EPuck_Environment_Classification::Init(TConfigurationNode& t_node) {
   std::string m_strOutput;
   m_strOutput = GetId();
 
-  /* INITIAL QUALITY: has to be estimated in the first exploration state */
+  /* Initial quality: has to be estimated in the first exploration state */
   opinion.quality = 0;
-  
-  readNodeMapping();
   
   if(simulationParams.percentRed < simulationParams.percentBlue)
     simulationParams.percentRed = simulationParams.percentBlue;
   simulationParams.percentRed = simulationParams.percentRed / 100;
-
-  string allVotesFile = "allVotes.txt";
-  votesFile.open(allVotesFile.c_str(), std::ios_base::out | std::ios_base::app);
-  
 }
-
-// Decide which robot runs on which cluster node
-void EPuck_Environment_Classification::readNodeMapping() {
-
-  int r_id;
-  int r_node;
-
-  ifstream infile;
-
-  infile.open(simulationParams.mappingPath.c_str());
- 
-  while (infile >> r_id >> r_node)
-    robotIdToNode[r_id] = r_node;
-
-  infile.close();  
-}
-
 
 /* Connect/disconnect Ethereum processes to each other */
 void EPuck_Environment_Classification::UpdateNeighbors(set<int> newNeighbors) {
@@ -182,34 +152,22 @@ void EPuck_Environment_Classification::UpdateNeighbors(set<int> newNeighbors) {
   }
 
   for (it = neighborsToRemove.begin(); it != neighborsToRemove.end(); ++it) {
-    
     int i = *it;
     string e = enodes[i];
-    if (simulationParams.useBackgroundGethCalls)
-      remove_peer_bg(robotId, e, nodeInt, simulationParams.blockchainPath);
-    else
-      remove_peer(robotId, e, nodeInt, simulationParams.blockchainPath);    
+      removePeer(robotId, e, nodeInt);
   }
    
-
   for (it = neighborsToAdd.begin(); it != neighborsToAdd.end(); ++it) {
     int i = *it;
     string e = enodes[i];
-    if (simulationParams.useBackgroundGethCalls)
-      add_peer_bg(robotId, e, nodeInt, simulationParams.blockchainPath);
-    else
-      add_peer(robotId, e, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
+    addPeer(robotId, e, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
   }
   
   // Update neighbor array
   set<int> neighborsTmp(newNeighbors);
   neighbors = neighborsTmp;
-  
 }
 
-
-/************************************************* CONTROL STEP ************************************************/
-/***************************************************************************************************************/
 void EPuck_Environment_Classification::ControlStep() {
 
   ConnectAndListen();
@@ -302,26 +260,11 @@ void EPuck_Environment_Classification::RandomWalk() {
   }
 }
 
-string EPuck_Environment_Classification::getBlockChainSize() {
-
-  int robotId = Id2Int(GetId());
-  
-  ostringstream fullCommandStream;
-  fullCommandStream << "du " << simulationParams.blockchainPath << robotId << "/geth/chaindata/";
-  std::string fullCommand = fullCommandStream.str();  
-  string res = exec(fullCommand.c_str());
-
-  return res;
-}
-
-
-
 /************************************************* EXPLORING STATE *********************************************/
 /***************************************************************************************************************/
 void EPuck_Environment_Classification::Explore() {
 
   int robotId = Id2Int(GetId());
-
 
   /* 20 is for jamming */
   if (byzantineStyle == 20) {
@@ -401,23 +344,22 @@ void EPuck_Environment_Classification::Explore() {
 
     int argsEmpty[0] = {};
     
-    if (votesFile.is_open()) {
-      string blockNum = smartContractInterfaceCall(robotId, interface, contractAddress, "getBlockNumber", argsEmpty, 0, 0, nodeInt, simulationParams.blockchainPath);
-      votesFile << robotId << "," << opinionInt << "," << blockNum << endl;      
-    }
-
     long long wei = 4000000000000000000;
     
     int args[1] = {opinionInt};
-    smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
 
-    smartContractInterfaceBg(robotId, interface,
-	 contractAddress, "askForPayout", args, 0, 0, nodeInt, simulationParams.blockchainPath);
+    /* TODO: Submit a vote via the new interface*/
+  
+    //  smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
+    /* TODO: Ask for payout via the new interface*/
+   // smartContractInterfaceBg(robotId, interface,
+//	 contractAddress, "askForPayout", args, 0, 0, nodeInt, simulationParams.blockchainPath);
     
 
     if (byzantineStyle > 10 && byzantineStyle < 20) {
       for (int i = 0; i < simulationParams.maxFlooding - 1; i++) {
-	smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
+	      /*TODO: Submit votes via the new interface*/
+	//smartContractInterfaceBg(robotId, interface, contractAddress, "vote", args, 1, wei, nodeInt, simulationParams.blockchainPath);
       }
     }
     
@@ -425,7 +367,6 @@ void EPuck_Environment_Classification::Explore() {
     
     m_sStateData.remainingExplorationTime = 150;
     m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
-
   }  
 }
 
@@ -439,18 +380,9 @@ void EPuck_Environment_Classification::WaitForDecision() {
   string eventResult;
 
   cout << "Robot id is " << robotId << endl;
-  eventResult = eventInterfaceConsensus(robotId, interface, contractAddress, nodeInt, simulationParams.blockchainPath);	
+  /* TODO: Get eventResult here */
+  //eventResult = eventInterfaceConsensus(robotId, interface, contractAddress, nodeInt, simulationParams.blockchainPath);	
 
-  if (eventResult.find("Error") == string::npos) {
-    vector<string> splitResult = split(eventResult, ' ');    
-    std::string s_consensusReached = splitResult[0];      
-    cout << "consensusReached is " << s_consensusReached << endl;
-    if (atoi(s_consensusReached.c_str()) == 2) {
-      consensusReached = true;
-    } else {
-      cout << "consensusReached Epuck is " << consensusReached << endl;
-    }
-  }
   threadCurrentlyRunning = false;
 }
 
@@ -459,7 +391,7 @@ void EPuck_Environment_Classification::ConnectAndListen() {
   int robotId = Id2Int(GetId());
   set<int> currentNeighbors;
 
-
+  /* Fully connected (for debugging) */
   //for (UInt8 i = 0; i <= 19; i++) {
   //  currentNeighbors.insert(i);
   //}
@@ -483,7 +415,6 @@ void EPuck_Environment_Classification::ConnectAndListen() {
 }
 
 void EPuck_Environment_Classification::Diffusing() {
-
 
   if (simulationParams.determineConsensus) {
   
@@ -517,10 +448,10 @@ void EPuck_Environment_Classification::Move(){
 
 /************************************************* TURNING LEDS ON *********************************************/
 /***************************************************************************************************************
-0 = BLACK/EX-RED;
-1 = GREEN; 
-2 = WHITE/EX-BLUE
-AGGIUNGERECOLORI 
+0 = NOTHING (smart contract calls can return 0 as default value, therefore, 0 should never be used); 
+1 = WHITE;
+2 = BLACK;
+3 = GREEN;
 */
 void EPuck_Environment_Classification::TurnLeds(){
 
@@ -544,26 +475,7 @@ void EPuck_Environment_Classification::TurnLeds(){
   }
 }
 
-void EPuck_Environment_Classification::killGethAndRemoveFolders(string bcPath, string regenFile){
-
-  // Kill all geth processes  
-  string bckiller = "bash " + bcPath + "/bckillerccall";
-  exec(bckiller.c_str());
-
-
-  // Remove blockchain folders
-  string rmBlockchainData = "rm -rf " + bcPath + "*";
-  exec(rmBlockchainData.c_str());
-  
-  
-  // Regenerate blockchain folders
-  string regenerateFolders = "bash " + regenFile;
-  exec(regenerateFolders.c_str());      
-  
-}
-
-
-void EPuck_Environment_Classification::fromLoopFunctionResPrepare(){
+void EPuck_Environment_Classification::prepare(){
 
   opinion.countedCellOfActualOpinion = 0;
   opinion.quality = 0;
@@ -588,41 +500,9 @@ void EPuck_Environment_Classification::fromLoopFunctionResPrepare(){
   int robotId = Id2Int(GetId());
 
   beginning = true;
-  
-  /* Ethereum */
-  nodeInt = robotIdToNode[robotId];       
-  interface = readStringFromFile(simulationParams.baseDir + simulationParams.interfacePath);
-    
-  ostringstream genesisPathStream;
-  genesisPathStream << "~/genesis/genesis" << simulationParams.basePort << ".json";
-  string genesisPath = genesisPathStream.str();
-  geth_init(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath, genesisPath);
-  start_geth(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
-  createAccount(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
-  coinbaseAddresses[robotId] = getCoinbase(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
-  address = coinbaseAddresses[robotId];          
-  prepare_for_new_genesis(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);      
-}
-
-void EPuck_Environment_Classification::fromLoopFunctionResStart(){
-
-  if (!simulationParams.useClassicalApproach) {
-    int robotId = Id2Int(GetId());
-  
-    ostringstream genesisPathStream;
-    genesisPathStream << "~/genesis/genesis" << simulationParams.basePort << ".json";
-    string genesisPath = genesisPathStream.str();
-        
-    geth_init(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath, genesisPath);
-    start_geth(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
-    enodes[robotId] = get_enode(robotId, nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
-    enode = enodes[robotId];
-    unlockAccount(robotId, "test", nodeInt, simulationParams.basePort, simulationParams.blockchainPath);
-  }
 }
 
 /****************************************/
 /****************************************/
-
 
 REGISTER_CONTROLLER(EPuck_Environment_Classification, "epuck_environment_classification_controller")
