@@ -9,7 +9,7 @@
     <system threads="THREADS" />
 
     <experiment length="0"
-                ticks_per_second="10"
+                ticks_per_second="1"
 		real_time="REALTIME"
                 random_seed="0" />
 
@@ -21,7 +21,7 @@
 <controllers>
 
     <epuck_environment_classification_controller id="epc"
-     library="/home/vstrobel/Documents/blockchain-journal-bc/build/controllers/epuck_environment_classification/libepuck_environment_classification.so">
+     library="/home/volker/Documents/mygithub-software/ARGoS-geth-interface/build/controllers/libcontrollers.so">
      
       <actuators>
 	<epuck_wheels implementation="default" />
@@ -57,13 +57,16 @@
 			       max_flooding="MAXFLOODING"
 			       percent_black="PERCENT_BLACK"
 			       determine_consensus="DETERMINECONSENSUS"
+			       contract_address="CONTRACTADDRESS"
+			       contract_abi="CONTRACTABI"
+			       container_name_base="CONTAINERNAMEBASE"
 			       distribute_ether="DISTRIBUTEETHER"/> <!-- Sigma and G must be inserted in seconds, not in ticks; 
 							  1 = Voter model; 2 = Direct comparison; 3 = Majority Rule-->
  
       </params>
     </epuck_environment_classification_controller>
   </controllers>
- <loop_functions  library="/home/vstrobel/Documents/blockchain-journal-bc/build/loop_functions/environment_classification_loop_functions/libenvironment_classification_loop_functions.so"
+  <loop_functions  library="/home/volker/Documents/mygithub-software/ARGoS-geth-interface/build/loop_functions/libenvironment_classification_loop_functions.so"
                   label="environment_classification_loop_functions">
 
   <cells  number_of_red_cells="0"
@@ -95,12 +98,8 @@
 	  sigma="10"
 	  lambda="100"
 	  turn="45"
-	  miningdiff="MININGDIFF"
 	  use_multiple_nodes="USEMULTIPLENODES"
-	  miner_id="MINERID"
-	  miner_node="MINERNODE"
 	  decision_rule="DECISIONRULE"
-	  base_port="BASEPORT"
 	  use_classical_approach="USECLASSICALAPPROACH"
 	  num_byzantine="NUMBYZANTINE"
 	  byzantine_swarm_style="BYZANTINESWARMSTYLE"
@@ -108,6 +107,9 @@
 	  regenerate_file="REGENERATEFILE"
 	  color_mixing="MIXING"
 	  blockchain_path="BLOCKCHAINPATH"
+	  contract_address="CONTRACTADDRESS"
+	  contract_abi="CONTRACTABI"
+	  container_name_base="CONTAINERNAMEBASE"
 	  determine_consensus="DETERMINECONSENSUS"/>
 
   </loop_functions>
@@ -189,7 +191,7 @@
   <!--       <placement idx="10" position="-2,0,2" look_at="0,0,0" lens_focal_length="20" /> -->
   <!--       <placement idx="11" position="-2,0,2" look_at="0,0,0" lens_focal_length="20" /> -->
   <!--    </camera> -->
-  <!--     <!-\- <user_functions label="environment_classification_qt_user_functions" /> -\-> -->
+  <!--     <user_functions label="environment_classification_qt_user_functions" /> -->
   <!--   </qt-opengl> -->
   <!-- </visualization> -->
  

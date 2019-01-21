@@ -4,6 +4,9 @@ project(argos3_examples)
 # Set the path where CMake will find additional scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 
+# Create compilation database (for autocomplete)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Find the ARGoS package
 find_package(PkgConfig)
 #find_package(Lua51 REQUIRED) 
@@ -16,14 +19,14 @@ message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
 #include(ARGoSCheckQTOpenGL)
 
 # Set ARGoS include dir
-include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${GSL_INCLUDE_DIR})
+set(INTERFACE_DIR interface)
+set(CONTROLLER_DIR controllers)
+
+include_directories(${CMAKE_SOURCE_DIR} ${ARGOS_INCLUDE_DIRS} ${GSL_INCLUDE_DIR} ${CONTROLLER_DIR} ${INTERFACE_DIR})
 
 # Set ARGoS link dir
 link_directories(${ARGOS_LIBRARY_DIRS})
 
-# Descend into the controllers directory
+add_subdirectory(interface)
 add_subdirectory(controllers)
-
-# Descend into the loop_functions directory
 add_subdirectory(loop_functions)
-

@@ -1,3 +1,26 @@
 include_directories(${CMAKE_SOURCE_DIR})
-add_subdirectory(environment_classification_loop_functions)
 
+link_directories(${CMAKE_BINARY_DIR}/controllers/footbot_environment_classification)
+set(environment_classification_loop_functions_SOURCES environment_classification_loop_function.cpp)
+
+if(ARGOS_COMPILE_QTOPENGL)
+  set(environment_classification_loop_functions_SOURCES
+    ${environment_classification_loop_functions_SOURCES}
+    environment_classification_qt_user_function.cpp)
+endif(ARGOS_COMPILE_QTOPENGL)
+
+add_library(environment_classification_loop_functions MODULE ${environment_classification_loop_functions_SOURCES})
+
+
+target_link_libraries(environment_classification_loop_functions
+  controllers
+  argos3core_simulator
+  argos3plugin_simulator_dynamics2d
+  argos3plugin_simulator_entities
+  argos3plugin_simulator_epuck
+  argos3plugin_simulator_genericrobot
+  argos3plugin_simulator_media)
+
+if(ARGOS_COMPILE_QTOPENGL)
+target_link_libraries(environment_classification_loop_functions argos3plugin_simulator_qtopengl)
+endif(ARGOS_COMPILE_QTOPENGL)
