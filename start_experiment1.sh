@@ -6,7 +6,7 @@ TEMPLATE='experiments/epuck_EC_locale_template.argos'
 OUTFILE="experiments/epuck$1.argos"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para$1/data" # always without '/' at the end!!
-NUMROBOTS=(20)
+NUMROBOTS=(10)
 THRESHOLDS=(80000) 
 REPETITIONS=10
 DECISIONRULE=$3
@@ -116,6 +116,9 @@ fi
 	    -e "s|DISTRIBUTEETHER|$DISTRIBUTEETHER|g"\
 	    -e "s|CONTAINERNAMEBASE|$CONTAINERNAMEBASE|g"\
 	    $TEMPLATE > $OUTFILE
+
+	# Restart network
+	bash /home/volker/Documents/mygithub-software/ethereum-docker/local_scripts/start_network.sh $k
 	
 	# Start experiment
 	argos3 -c $OUTFILE
