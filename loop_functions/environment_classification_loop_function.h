@@ -69,7 +69,8 @@ class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
 		virtual void MoveRobotsAwayFromArena(UInt32 opinionsToAssign[]);
 		virtual void AssignNewStateAndPosition();
 private:
-		virtual void fillSettings(TConfigurationNode& tEnvironment);
+  virtual void fillSettings(TConfigurationNode& tEnvironment);
+  virtual void getAndWriteStats();
   
   GethInterface *gethInterface;
   std::string containerName;	

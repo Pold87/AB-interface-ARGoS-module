@@ -200,8 +200,52 @@ void CEnvironmentClassificationLoopFunctions::InitRobots()
   AssignNewStateAndPosition();
 }
 
-void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node)
-{
+void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
+
+      // Select a random robot
+    CRange<UInt32> rangeNumRobots(0, n_robots);
+    UInt32 selRobot = m_pcRNG->Uniform(rangeNumRobots);
+    UInt32 s = 0;
+
+    cout << "Random number is " << selRobot << endl;
+    
+    string mean, localCount;
+
+    CSpace::TMapPerType& m_cEpuck = GetSpace().GetEntitiesByType("epuck");
+    for(CSpace::TMapPerType::iterator it = m_cEpuck.begin(); it != m_cEpuck.end(); ++it) {
+
+      if (s == selRobot) {
+
+	cout << "Selected robot " << s << endl;
+      
+      /* Get handle to e-puck entity and controller */
+      CEPuckEntity& cEpuck = *any_cast<CEPuckEntity*>(it->second);
+
+      EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
+
+      mean = cController.getGethInterface().scReturn0("getMean", 0);
+      localCount = cController.getGethInterface().scReturn0("localCount", 0);    
+      }
+      s++;      
+    }
+
+    if (blockChainFile.is_open()) {
+      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << endl;
+    }
+    
+    if (everyTicksFile.is_open()) {
+      everyTicksFile << (GetSpace().GetSimulationClock()) << "\t";
+      everyTicksFile << number_of_runs << "\t";
+
+      for ( UInt32 c = 0; c < N_COL; c++ )
+      {
+        everyTicksFile << robotsInExplorationCounter[c] << "\t\t" << robotsInDiffusionCounter[c]  << "\t\t";
+      }
+      everyTicksFile << std::endl;
+    }
+}
+
+void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
 
   TConfigurationNode& tEnvironment = GetNode(t_node, "cells");
   fillSettings(tEnvironment);
@@ -432,6 +476,8 @@ bool CEnvironmentClassificationLoopFunctions::IsExperimentFinished()
     {
       number_of_runs--;
 
+      getAndWriteStats();
+      
       /* RUNSFILE: Write statistics of the last run */
       if (runsFile.is_open())
       {
@@ -601,6 +647,8 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
      robotsInExplorationCounter[1] -> number of robots exploring with opinion green
      ... */
 
+  cout << "Time step is " << GetSpace().GetSimulationClock() << endl;
+  
   for ( UInt32 c=0; c<N_COL; c++ )
   {
     robotsInExplorationCounter[c] = 0;
@@ -663,47 +711,7 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
 
   /* EVERYTICKSFILE: Write this statistics only if the file is open and it's the right timeStep (multiple of timeStep) */
   if ( ! (GetSpace().GetSimulationClock() % timeStep) ) {
-
-    // Select a random robot
-    CRange<UInt32> rangeNumRobots(0, n_robots);
-    UInt32 selRobot = m_pcRNG->Uniform(rangeNumRobots);
-    UInt32 s = 0;
-
-    cout << "Random number is " << selRobot << endl;
-    
-    string mean, localCount;
-
-    for(CSpace::TMapPerType::iterator it = m_cEpuck.begin(); it != m_cEpuck.end(); ++it) {
-
-      if (s == selRobot) {
-
-	cout << "Selected robot " << s << endl;
-      
-      /* Get handle to e-puck entity and controller */
-      CEPuckEntity& cEpuck = *any_cast<CEPuckEntity*>(it->second);
-
-      EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
-
-      mean = cController.getGethInterface().scReturn0("getMean", 0);
-      localCount = cController.getGethInterface().scReturn0("localCount", 0);    
-      }
-      s++;      
-    }
-
-    if (blockChainFile.is_open()) {
-      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << endl;
-    }
-    
-    if (everyTicksFile.is_open()) {
-      everyTicksFile << (GetSpace().GetSimulationClock()) << "\t";
-      everyTicksFile << number_of_runs << "\t";
-
-      for ( UInt32 c = 0; c < N_COL; c++ )
-      {
-        everyTicksFile << robotsInExplorationCounter[c] << "\t\t" << robotsInDiffusionCounter[c]  << "\t\t";
-      }
-      everyTicksFile << std::endl;
-    }
+    getAndWriteStats();
   }
 }
 

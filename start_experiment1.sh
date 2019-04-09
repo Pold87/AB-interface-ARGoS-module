@@ -6,7 +6,7 @@ TEMPLATE='experiments/epuck_EC_locale_template.argos'
 OUTFILE="experiments/epuck$1.argos"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para$1/data" # always without '/' at the end!!
-NUMROBOTS=(10)
+NUMROBOTS=(6)
 THRESHOLDS=(80000) 
 REPETITIONS=10
 DECISIONRULE=$3
@@ -25,7 +25,7 @@ DETERMINECONSENSUS="false"
 DISTRIBUTEETHER="false"
 CONTRACTADDRESS=`cat "${DOCKERBASE}"/contractAddress.txt`
 CONTRACTABI="${DOCKERBASE}/geth/deployed_contract/contractABI.abi"
-CONTAINERNAMEBASE="ethereum-docker_eth_"
+CONTAINERNAMEBASE="ethereum_eth."
 NUMBYZANTINE=(0 1 2 3 4 5 6 7 8 9)
 
 # 1: Always send 0.0 as value
@@ -116,7 +116,13 @@ fi
 	    -e "s|DISTRIBUTEETHER|$DISTRIBUTEETHER|g"\
 	    -e "s|CONTAINERNAMEBASE|$CONTAINERNAMEBASE|g"\
 	    $TEMPLATE > $OUTFILE
+	
+	docker stop $(docker ps -a -q)
 
+	docker rm $(docker ps -a -q)
+
+	systemctl restart docker
+	
 	# Restart network
 	bash /home/volker/Documents/mygithub-software/ethereum-docker/local_scripts/start_network.sh $k
 	

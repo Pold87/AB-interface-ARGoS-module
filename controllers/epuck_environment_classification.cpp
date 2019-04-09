@@ -86,10 +86,12 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   ostringstream containerNameStream;
   containerNameStream << simulationParams.containerNameBase << robotId;
 
-  gethInterface = new GethInterface(simulationParams.contractABI,
+  gethInterface = new GethInterface(robotId,
+				    simulationParams.contractABI,
 				    simulationParams.contractAddress,
 				    containerNameStream.str(),
 				    simulationParams.containerNameBase,
+				    "localhost",
 				    "/root/templates/");
 
   enodes[robotId] = gethInterface->getEnode();
@@ -132,8 +134,8 @@ void EPuck_Environment_Classification::prepare() {
   // Assign the initial state of the robots: all in exploration state
   m_sStateData.State = SStateData::STATE_EXPLORING;
 
-  // Assign the exploration time (random generated)
-  m_sStateData.remainingExplorationTime = 150;
+  // Assign the exploration time
+  m_sStateData.remainingExplorationTime = 30;
   m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
   
 }
@@ -250,12 +252,20 @@ void EPuck_Environment_Classification::Explore() {
     /* Submit a vote via the new interface*/
     // TODO: attach wei again just for DEBUGGING!
     int arg = opinionInt;
+
+    cout << " Voting !!" << endl;
+    
     gethInterface->scInterface("vote", arg, 0);
     //gethInterface->scInterfaceCall0("getMean", 0);
     //gethInterface->scInterfaceCall0("localCount", 0);
 
     /* Ask for payout via the new interface*/
-    gethInterface->scInterface("askForPayout", 0);
+
+    CRange<Real> zeroOne(0.0, 1.0);
+    Real p = m_pcRNG->Uniform(zeroOne);
+    if (p < 0.1) {
+      gethInterface->scInterface("askForPayout", 0);
+    }
 
     if (byzantineStyle > 10 && byzantineStyle < 20) {
       for (int i = 0; i < simulationParams.maxFlooding - 1; i++) {
@@ -264,7 +274,7 @@ void EPuck_Environment_Classification::Explore() {
     }
 
     // Assigning a new exploration and time, for the next exploration state
-    m_sStateData.remainingExplorationTime = 150;
+    m_sStateData.remainingExplorationTime = 30;
     m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
   }
 }

@@ -12,11 +12,20 @@ using namespace std;
 
 // TODO: Maybe I can delete this constructor, it should be enough to
 // have a default constructor
-GethInterface::GethInterface(string ab, string ad, string cn, string cnb, string p) {
+GethInterface::GethInterface(int r, string ab, string ad, string cn, string cnb, string cl, string p) {
+
+  robot = r;
   contractABI = readStringFromFile(ab);
   contractAddress = ad;
   containerName = cn;
-  containerNameBase = cnb; 
+  containerNameBase = cnb;
+  containerExt = getContainerExtension(cn);
+  containerLocation = cl;
+
+  ostringstream ss;
+  ss << containerName << "." << containerExt;
+  containerNameFull = ss.str();
+  
   templatePath = p;
 }
 
@@ -52,16 +61,25 @@ string GethInterface::removeSpace(string str) {
   return noSpace;
 }
 
+void GethInterface::wrapSSH(std::string cmd) {
+  ostringstream commandStream;
+  commandStream << "ssh volker@164.15.10.90 -p39999 "
+		<< cmd;
+  exec(commandStream.str());
+}
+
 // Execute a docker command on a container
 void GethInterface::dockerExec(const string cmd) {
   ostringstream commandStream;
   commandStream << "docker exec -d "
-		<< containerName << " "
+		<< containerNameFull << " "
 		<< cmd;
 
-  //cout << commandStream.str() << endl;
-  
+  cout << commandStream.str() << endl;
+
   exec(commandStream.str());
+  
+  //wrapSSH(commandStream.str());
 }
 
 
@@ -69,7 +87,7 @@ void GethInterface::dockerExec(const string cmd) {
 void GethInterface::dockerExecForeground(const string cmd) {
   ostringstream commandStream;
   commandStream << "docker exec -it "
-		<< containerName << " "
+    		<< containerNameFull << " "
 		<< cmd;
 
   //cout << commandStream.str() << endl;
@@ -81,7 +99,7 @@ void GethInterface::dockerExecForeground(const string cmd) {
 string GethInterface::dockerExecReturn(const string cmd) {
   ostringstream commandStream;
   commandStream << "docker exec -it "
-		<< containerName << " "
+    		<< containerNameFull << " "
 		<< cmd;
 
   cout << commandStream.str() << endl;
@@ -94,14 +112,13 @@ string GethInterface::dockerExecReturn(const string cmd) {
 void GethInterface::dockerExecBackground(const string cmd) {
   ostringstream commandStream;
   commandStream << "docker exec -i "
-		<< containerName << " "
+		<< containerNameFull << " "
 		<< cmd << "&";
 
-  //cout << commandStream.str() << endl;
+  cout << commandStream.str() << endl;
   
   system(commandStream.str().c_str());
 }
-
 
 
 /* Reads the first line from a file */
@@ -256,6 +273,22 @@ string GethInterface::getContractABI() {
 
 void GethInterface::setContractABI(std::string abi) {
   contractABI = readStringFromFile(abi);
+}
+
+std::string GethInterface::getContainerExtension(string cn) {
+  ostringstream commandStream;
+  commandStream << "docker service ps -f \'name="
+		<< cn << "\' "
+		<< "ethereum_eth" // TODO: use a variable instead
+		<< " -q --no-trunc | head -n1";
+
+  cout << "Full command is " << commandStream.str() << endl;
+  
+  string id = exec(commandStream.str());
+
+  cout << "containerExtension is " << id << endl;
+  
+  return id;
 }
 
 

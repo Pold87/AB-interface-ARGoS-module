@@ -12,9 +12,12 @@ private:
   std::string contractAddress;
   std::string containerName;
   std::string containerNameBase;
+  std::string containerExt;
+  std::string containerNameFull;
+  std::string containerLocation;
   std::string templatePath;
 public:
-  GethInterface(std::string ab, std::string ad, std::string cn, std::string cnb, std::string p);
+  GethInterface(int robot, std::string ab, std::string ad, std::string cn, std::string cnb, std::string cl, std::string p);
   std::string readStringFromFile(std::string fileName);
   std::string exec(std::string cmdStr);
   std::string removeSpace(std::string str);
@@ -38,5 +41,7 @@ public:
   std::string getContractABI();
   std::string getEnode();
   void setContractABI(std::string abi);
+  std::string getContainerExtension(std::string cn);
+  void wrapSSH(std::string cmd);
 };
 #endif
