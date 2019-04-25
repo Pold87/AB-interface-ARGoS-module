@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(argos3_examples)
 
+if (CMAKE_VERSION VERSION_LESS "3.1")
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+  endif ()
+  else ()
+    set (CMAKE_CXX_STANDARD 11)
+endif ()
+
 # Set the path where CMake will find additional scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake)
 

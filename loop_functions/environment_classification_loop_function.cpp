@@ -379,6 +379,9 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
     incorrectParameters = true;
     IsExperimentFinished();
   }
+
+  // Kill the bootstrap Ethereum node
+  system("docker service rm ethereum_bootstrap");
 }
 
 void CEnvironmentClassificationLoopFunctions::Reset()

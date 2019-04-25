@@ -16,6 +16,7 @@ private:
   std::string containerNameFull;
   std::string containerLocation;
   std::string templatePath;
+  std::string bootstrap;
 public:
   GethInterface(int robot, std::string ab, std::string ad, std::string cn, std::string cnb, std::string cl, std::string p);
   std::string readStringFromFile(std::string fileName);
@@ -23,8 +24,9 @@ public:
   std::string removeSpace(std::string str);
   void dockerExec(std::string cmd);
   void dockerExecForeground(std::string cmd);
-  std::string dockerExecReturn(std::string cmd);
   void dockerExecBackground(std::string cmd);
+  std::string dockerExecReturn(std::string cmd);
+  std::string dockerExecBootstrapReturn(std::string cmd);
   void execTemplate(std::string templateName);
   void scInterface(std::string function, long long wei);
   void scInterface(std::string function, int arg, long long wei);
@@ -39,9 +41,10 @@ public:
   void addPeer(std::string enode);
   void removePeer(std::string enode);
   std::string getContractABI();
-  std::string getEnode();
   void setContractABI(std::string abi);
-  std::string getContainerExtension(std::string cn);
+  std::string getEnode();
+  std::string getBootstrap();
+  std::string getContainerExtension(std::string cn, std::string containerName);
   void wrapSSH(std::string cmd);
 };
 #endif

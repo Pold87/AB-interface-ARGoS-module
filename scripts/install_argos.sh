@@ -127,8 +127,8 @@ function do_create_setup_script() {
 #mkdir $INSTALL_DIR
 
 # Go through packages
-#do_argos3
-#do_epuck
+do_argos3
+do_epuck
 #do_tam
 
 # Create the setup script

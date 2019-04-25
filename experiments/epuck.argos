@@ -21,7 +21,7 @@
 <controllers>
 
     <epuck_environment_classification_controller id="epc"
-     library="/home/volker/Documents/mygithub-software/ARGoS-geth-interface/build/controllers/libcontrollers.so">
+     library="./build/controllers/libcontrollers.so">
      
       <actuators>
 	<epuck_wheels implementation="default" />
@@ -45,20 +45,20 @@
 			       decision_rule=""
 			       num_pack_saved="2"
 			       percent_white="60"
-			       base_dir="/home/volker/Documents/mygithub-software/ARGoS-geth-interface/controllers/epuck_environment_classification/"
+			       base_dir="/home/vstrobel/Documents/ARGoS-geth-interface/controllers/epuck_environment_classification/"
 			       use_multiple_nodes="true"
 			       use_background_geth_calls="USEBACKGROUNDGETHCALLS"
 			       interface_path="interface.txt"
 			       mapping_path="MAPPINGPATH"
 			       base_port="BASEPORT"
-			       blockchain_path="/home/volker/eth_data_para/data"
+			       blockchain_path="/home/vstrobel/eth_data_para/data"
 			       use_classical_approach="false"
 			       regenerate_file=""
 			       max_flooding="20"
 			       percent_black="40"
 			       determine_consensus="false"
-			       contract_address="0xDB571079aF66EDbB1a56d22809584d39C20001D9"
-			       contract_abi="/home/volker/Documents/mygithub-software/ethereum-docker//geth/deployed_contract/contractABI.abi"
+			       contract_address=""
+			       contract_abi=""
 			       container_name_base="ethereum_eth."
 			       distribute_ether="false"/> <!-- Sigma and G must be inserted in seconds, not in ticks; 
 							  1 = Voter model; 2 = Direct comparison; 3 = Majority Rule-->
@@ -66,12 +66,12 @@
       </params>
     </epuck_environment_classification_controller>
   </controllers>
-  <loop_functions  library="/home/volker/Documents/mygithub-software/ARGoS-geth-interface/build/loop_functions/libenvironment_classification_loop_functions.so"
+  <loop_functions  library="./build/loop_functions/libenvironment_classification_loop_functions.so"
                   label="environment_classification_loop_functions">
 
   <cells  number_of_red_cells="0"
-	  base_dir_loop="/home/volker/Documents/mygithub-software/ARGoS-geth-interface/controllers/epuck_environment_classification/"
-	  data_dir="data/experiment1_decision3_mixingtrue_byzstyle1-node-05-03-2019/80000/"
+	  base_dir_loop="/home/vstrobel/Documents/ARGoS-geth-interface/controllers/epuck_environment_classification/"
+	  data_dir="data/experiment1_decision3_mixingtrue_byzstyle1-node-11-04-2019/80000/"
           number_of_white_cells="0"
 	  number_of_black_cells="0"
 	  using_percentage="true"
@@ -79,19 +79,19 @@
 	  exit="true"            
 	  percent_black="40"
 	  percent_red="0"
-	  save_every_ticks="10000"
+	  save_every_ticks="100000"
 	  save_every_ticks_flag="true"
 	  save_every_run_flag="true"
 	  save_blockchain_flag="true"
 	  save_every_robot_flag="false"
 	  save_every_quality_flag="false"
 	  save_global_stat_flag="false"
-	  radix="num10_black40_byz0_run1"
-	  number_of_robots="10"
+	  radix="num2_black40_byz0_run1"
+	  number_of_robots="2"
 	  number_of_runs="1"
 	  number_of_qualities="2"
 	  r_0="0"
-	  w_0="10"
+	  w_0="2"
 	  b_0="0"	  
 	  length_of_runs="450"
 	  g="10"
@@ -106,9 +106,9 @@
 	  subswarm_consensus="false"
 	  regenerate_file=""
 	  color_mixing="true"
-	  blockchain_path="/home/volker/eth_data_para/data"
-	  contract_address="0xDB571079aF66EDbB1a56d22809584d39C20001D9"
-	  contract_abi="/home/volker/Documents/mygithub-software/ethereum-docker//geth/deployed_contract/contractABI.abi"
+	  blockchain_path="/home/vstrobel/eth_data_para/data"
+	  contract_address=""
+	  contract_abi=""
 	  container_name_base="ethereum_eth."
 	  determine_consensus="false"/>
 
@@ -140,7 +140,7 @@
    <distribute>
       <position method="uniform" min="0.1,0.1,0" max="1.9 , 1.9, 0" />
       <orientation method="gaussian" mean="1,1,0 " std_dev="360,0,0 " />
-      <entity quantity="10" max_trials="20">
+      <entity quantity="2" max_trials="20">
         <e-puck id="ep" >
           <controller config="epc" />
         </e-puck>

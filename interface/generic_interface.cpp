@@ -7,6 +7,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdexcept>
 
 using namespace std;
 
@@ -16,11 +17,16 @@ GethInterface::GethInterface(int r, string ab, string ad, string cn, string cnb,
 
   robot = r;
   contractABI = readStringFromFile(ab);
-  contractAddress = ad;
+  contractAddress = readStringFromFile(ad);
   containerName = cn;
   containerNameBase = cnb;
-  containerExt = getContainerExtension(cn);
+  containerExt = getContainerExtension(cn, "ethereum_eth");
   containerLocation = cl;
+ 
+  ostringstream bs;
+  string mybs = "ethereum_bootstrap.1";
+  bs << mybs << "." << getContainerExtension(mybs, "ethereum_bootstrap");
+  bootstrap = bs.str();
 
   ostringstream ss;
   ss << containerName << "." << containerExt;
@@ -97,6 +103,7 @@ void GethInterface::dockerExecForeground(const string cmd) {
 
 // Execute a docker command on a container
 string GethInterface::dockerExecReturn(const string cmd) {
+
   ostringstream commandStream;
   commandStream << "docker exec -it "
     		<< containerNameFull << " "
@@ -107,6 +114,21 @@ string GethInterface::dockerExecReturn(const string cmd) {
   string result = exec(commandStream.str());
   return result;
 }
+
+string GethInterface::dockerExecBootstrapReturn(const string cmd) {
+ 
+  ostringstream commandStream;
+  commandStream << "docker exec -it "
+    		<< bootstrap << " "
+		<< cmd;
+
+  cout << commandStream.str() << endl;
+  
+  string result = exec(commandStream.str());
+  return result;
+ 
+}
+
 // Execute a docker command on a container using the system background
 // command (&)
 void GethInterface::dockerExecBackground(const string cmd) {
@@ -267,6 +289,11 @@ string GethInterface::getEnode() {
   return removeSpace(enode);
 }	
 
+string GethInterface::getBootstrap() {
+  string enode = dockerExecBootstrapReturn("cat /root/my_enode.enode");
+  return removeSpace(enode);
+}
+
 string GethInterface::getContractABI() {
   return contractABI;
 }
@@ -275,11 +302,11 @@ void GethInterface::setContractABI(std::string abi) {
   contractABI = readStringFromFile(abi);
 }
 
-std::string GethInterface::getContainerExtension(string cn) {
+std::string GethInterface::getContainerExtension(string cn, string containerName) {
   ostringstream commandStream;
   commandStream << "docker service ps -f \'name="
 		<< cn << "\' "
-		<< "ethereum_eth" // TODO: use a variable instead
+		<< containerName // TODO: use a variable instead
 		<< " -q --no-trunc | head -n1";
 
   cout << "Full command is " << commandStream.str() << endl;
@@ -290,5 +317,3 @@ std::string GethInterface::getContainerExtension(string cn) {
   
   return id;
 }
-
-
