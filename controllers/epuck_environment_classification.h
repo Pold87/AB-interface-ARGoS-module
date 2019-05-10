@@ -71,6 +71,7 @@ public:
     std::string contractAddress;
     std::string contractABI;
     std::string containerNameBase;
+    int explorationTime;
     void Init(TConfigurationNode &t_node);
   };
 
@@ -131,9 +132,17 @@ public:
   inline std::string getEnode() { return enode; }
   inline int getByzantineStyle() { return byzantineStyle; }
   inline bool getConsensusReached() { return consensusReached; }
-  inline void setByzantineStyle(int style) { byzantineStyle = style; }
+  inline void setByzantineStyle(int style) { byzantineStyle = ByzantineStyle(style); }
   inline GethInterface getGethInterface() { return *gethInterface; }
   void UpdateNeighbors(std::set<int> newNeighbors);
+
+  enum ByzantineStyle { 
+     No = 0,
+     AlwaysZero = 1, AlwaysOne = 2, RandomZeroOne = 3, UniformRandom = 4, GaussianNoise = 5,
+     SybilAlwaysZero = 11, SybilAlwaysOne = 12, SybilRandomZeroOne = 13,
+     SybilUniformRandom = 14, SybilGaussianNoise = 15,
+     Jamming = 20
+  };
 
 private:
   int robotId;
@@ -168,9 +177,9 @@ private:
   int nodeInt;
   std::map<int, int> robotIdToNode;
   bool mining;
-  int byzantineStyle;
   bool threadCurrentlyRunning;
   int eventTrials;
+  ByzantineStyle byzantineStyle;
   bool consensusReached;
   bool receivedDecision;
   CColor red, blue, green;

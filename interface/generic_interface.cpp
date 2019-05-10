@@ -81,8 +81,6 @@ void GethInterface::dockerExec(const string cmd) {
 		<< containerNameFull << " "
 		<< cmd;
 
-  cout << commandStream.str() << endl;
-
   exec(commandStream.str());
   
   //wrapSSH(commandStream.str());
@@ -96,8 +94,6 @@ void GethInterface::dockerExecForeground(const string cmd) {
     		<< containerNameFull << " "
 		<< cmd;
 
-  //cout << commandStream.str() << endl;
-  
   system(commandStream.str().c_str());
 }
 
@@ -109,8 +105,6 @@ string GethInterface::dockerExecReturn(const string cmd) {
     		<< containerNameFull << " "
 		<< cmd;
 
-  cout << commandStream.str() << endl;
-  
   string result = exec(commandStream.str());
   return result;
 }
@@ -122,8 +116,6 @@ string GethInterface::dockerExecBootstrapReturn(const string cmd) {
     		<< bootstrap << " "
 		<< cmd;
 
-  cout << commandStream.str() << endl;
-  
   string result = exec(commandStream.str());
   return result;
  
@@ -134,16 +126,14 @@ string GethInterface::dockerExecBootstrapReturn(const string cmd) {
 void GethInterface::dockerExecBackground(const string cmd) {
   ostringstream commandStream;
   commandStream << "docker exec -i "
-		<< containerNameFull << " "
-		<< cmd << "&";
-
-  cout << commandStream.str() << endl;
-  
+  		<< containerNameFull << " "
+ 		<< cmd << " 2>&1 > /dev/null &";
+   
   system(commandStream.str().c_str());
 }
 
 
-/* Reads the first line from a file */
+// Reads the first line from a file
 string GethInterface::readStringFromFile(string fileName){
   string s;
   ifstream infile;
@@ -182,7 +172,6 @@ void GethInterface::scInterface(std::string function, long long wei) {
 
 void GethInterface::scInterface(std::string function, int arg, long long wei) {
   ostringstream commandStream;
-  cout << "Calling scInterface" << endl;
   commandStream << "bash /root/generic_sc_interface_1.sh \'"
 		<< contractABI << "\' " << contractAddress << " "
 		<< function << " " << arg << " " << wei;  
@@ -190,7 +179,6 @@ void GethInterface::scInterface(std::string function, int arg, long long wei) {
 }
 
 void GethInterface::scInterfaceCall0(std::string function, long long wei) {
-  cout << "Calling scInterfaceCall0" << endl;
   ostringstream commandStream;
   commandStream << "bash /root/generic_sc_interface_call_0.sh \'"
 		<< contractABI << "\' " << contractAddress << " "
@@ -203,7 +191,6 @@ void GethInterface::scInterfaceCall0(std::string function, long long wei) {
 // should at least check if the result is an integer
 string GethInterface::scReturn0(string function, long long wei) {
 
-  cout << "Calling scReturn0" << endl;
   ostringstream commandStream;
   commandStream << "bash /root/generic_sc_interface_call_0.sh \'"
 		<< contractABI << "\' " << contractAddress << " "
@@ -243,7 +230,6 @@ void GethInterface::execGethCmd(std::string command) {
 
 void GethInterface::execGethCmdBackground(string command) {
   ostringstream commandStream;
-  cout << "containerName is " << containerName << endl;
   commandStream << "bash /root/exec_cmd.sh "
 		<< "'" << command << "'";
   dockerExecBackground(commandStream.str());
@@ -268,7 +254,6 @@ void GethInterface::stopMining() {
 // agnostic
 void GethInterface::addPeer(string enode) {
 
-  cout << "Adding peer" << endl;
   ostringstream commandStream;
   // TODO: A good idea might be to send the enode via an ARGoS message   
   commandStream << "admin.addPeer\(" << enode << ")";

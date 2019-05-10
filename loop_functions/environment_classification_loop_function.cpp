@@ -167,9 +167,6 @@ void CEnvironmentClassificationLoopFunctions::InitRobots()
 
     /* Resetting initial state of the robots: exploring for everyone */
     cController.GetStateData().State = EPuck_Environment_Classification::SStateData::STATE_EXPLORING;
-    Real tmpValue = (m_pcRNG->Exponential((Real)sigma));
-    cController.GetStateData().remainingExplorationTime = tmpValue;
-    cController.GetStateData().explorDurationTime =  cController.GetStateData().remainingExplorationTime;
 
     /* Assign a random actual opinion using the shuffled vector */
     opinion.actualOpinion = opinionsToAssign[i];
@@ -209,7 +206,7 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
 
     cout << "Random number is " << selRobot << endl;
     
-    string mean, localCount;
+    string mean, localCount, voteCount, weight;
 
     CSpace::TMapPerType& m_cEpuck = GetSpace().GetEntitiesByType("epuck");
     for(CSpace::TMapPerType::iterator it = m_cEpuck.begin(); it != m_cEpuck.end(); ++it) {
@@ -224,7 +221,11 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
       EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
 
       mean = cController.getGethInterface().scReturn0("getMean", 0);
+      localCount = cController.getGethInterface().scReturn0("voteCount", 0);    
+      localCount = cController.getGethInterface().scReturn0("weightCount", 0);    
       localCount = cController.getGethInterface().scReturn0("localCount", 0);    
+      cout << "Getting weight" << endl;
+      weight = cController.getGethInterface().scReturn0("getWeight", 0);
       }
       s++;      
     }
@@ -443,8 +444,6 @@ void CEnvironmentClassificationLoopFunctions::AssignNewStateAndPosition()
 
     /* Resetting initial state of the robots: exploring for everyone */
     cController.GetStateData().State = EPuck_Environment_Classification::SStateData::STATE_EXPLORING;
-    cController.GetStateData().remainingExplorationTime = (m_pcRNG->Exponential((Real)sigma));
-    cController.GetStateData().explorDurationTime =  cController.GetStateData().remainingExplorationTime;
   }
 }
 
@@ -650,7 +649,6 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
      robotsInExplorationCounter[1] -> number of robots exploring with opinion green
      ... */
 
-  cout << "Time step is " << GetSpace().GetSimulationClock() << endl;
   
   for ( UInt32 c=0; c<N_COL; c++ )
   {
@@ -714,6 +712,7 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
 
   /* EVERYTICKSFILE: Write this statistics only if the file is open and it's the right timeStep (multiple of timeStep) */
   if ( ! (GetSpace().GetSimulationClock() % timeStep) ) {
+    cout << "Time step is " << GetSpace().GetSimulationClock() << endl;
     getAndWriteStats();
   }
 }

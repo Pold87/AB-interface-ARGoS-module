@@ -51,6 +51,7 @@ void EPuck_Environment_Classification::SimulationState::Init(
     GetNodeAttribute(t_node, "contract_address", contractAddress);
     GetNodeAttribute(t_node, "contract_abi", contractABI);
     GetNodeAttribute(t_node, "container_name_base", containerNameBase);
+    GetNodeAttribute(t_node, "exploration_time", explorationTime);
   } catch (CARGoSException &ex) {
     THROW_ARGOSEXCEPTION_NESTED(
         "Error initializing controller state parameters.", ex);
@@ -79,8 +80,8 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   GetNodeAttributeOrDefault(t_node, "velocity", m_fWheelVelocity,
                             m_fWheelVelocity);
   simulationParams.Init(GetNode(t_node, "simulation_parameters"));
-  simulationParams.g = simulationParams.g * 10;
-  simulationParams.sigma = simulationParams.sigma * 10;
+  simulationParams.g = simulationParams.g;
+  simulationParams.sigma = simulationParams.sigma;
 
   // Determine container name (base + robot ID)
   ostringstream containerNameStream;
@@ -135,7 +136,7 @@ void EPuck_Environment_Classification::prepare() {
   m_sStateData.State = SStateData::STATE_EXPLORING;
 
   // Assign the exploration time
-  m_sStateData.remainingExplorationTime = 30;
+  m_sStateData.remainingExplorationTime = simulationParams.explorationTime;
   m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
   
 }
@@ -174,99 +175,102 @@ void EPuck_Environment_Classification::Explore() {
     m_pcRABA->SetData(toSend);
   }
 
-  /* remainingExplorationTime it's the variable decremented each control step.
-   * This variable represents the time that a robot must still spend in
-   * exploration state. If this variable it's greater than zero, then it must be
-   * decremented and the robot should do exploration's stuffs (Update counters
-   * figuring out in which cell he is. It's done in loop function */
+  // remainingExplorationTime represents the time that a robot must still spend in
+  // exploration state.
   if (m_sStateData.remainingExplorationTime > 0) {
     m_sStateData.remainingExplorationTime--;
   }
 
-  /* If its time to change state, then the robot has to reset his own variables:
-   * - Assign a new random exponential time: remainingExplorationTime and
-   * explorDurationTime (used to keep trace of the exploration times, just for
-   * statistic aims);
-   * - Calculate the quality of the opinion, basing on the sensed datas (Number
-   * of counted cells of actual opinion / Number of total counted cells);
-   * - Reset counting variables (countedCellOfActualOpinion and count [total
-   * number of cells counted]);
-   * - Change state: Exploration->Diffusing;
-   * - Generate a new Diffusing time (same as exploring, but used for Diffusing
-   * state and calculated with different params for the random variable;
-   */
+  // If its time to change state, then the robot has to reset his own variables:
+  // - Assign a new random exponential time: remainingExplorationTime and
+  // explorDurationTime (used to keep trace of the exploration times, just for
+  // statistic aims);
+  // - Calculate the quality of the opinion, basing on the sensed data (Number
+  // of counted cells of actual opinion / Number of total counted cells);
   else {
 
     /* Calculate opinion ratio of white cells to total cells) */
     opinion.quality = (Real)((Real)(opinion.countedCellOfActualOpinion) /
                              (Real)(collectedData.count));
 
-    /* If this robot is a Byzantine robot, it always uses quality estimate 1.0
-     */
-    // TODO: Use variables instead of numbers
-    if (byzantineStyle == 1 || byzantineStyle == 11) {
-      opinion.quality = 0.0;
 
-      /* If this robot is a Byzantine robot, its quality estimate is
-         drawn from a value between 0.0 and 1.0 */
-    } else if (byzantineStyle == 2 || byzantineStyle == 12) {
-      opinion.quality = 1.0;
+    cout << endl << "actual opinion is " << opinion.actualOpCol << endl;
+    cout << endl << "actual opinion count " << opinion.countedCellOfActualOpinion << endl;
+    cout << "count is " << collectedData.count << endl;
+    cout << opinion.quality << endl;
 
-    } else if (byzantineStyle == 3 || byzantineStyle == 13) {
-
-      CRange<Real> zeroOne(0.0, 1.0);
-      Real p = m_pcRNG->Uniform(zeroOne);
-      if (p > 0.5) {
+    // If this robot is a Byzantine robot, it always uses quality estimate 1.0
+    switch (byzantineStyle) {
+      case AlwaysZero:
+      case SybilAlwaysZero:
         opinion.quality = 0.0;
-      } else {
+        break;
+
+      case AlwaysOne:
+      case SybilAlwaysOne:      
         opinion.quality = 1.0;
+        break;
+
+      case RandomZeroOne: {
+      case SybilRandomZeroOne:
+        CRange<Real> zeroOne(0.0, 1.0);
+        Real p = m_pcRNG->Uniform(zeroOne);
+        if (p > 0.5) {
+          opinion.quality = 0.0;
+        } else {
+          opinion.quality = 1.0;
+        }
+        break;
+        }
+
+      case UniformRandom:
+      case SybilUniformRandom:      
+        opinion.quality = m_pcRNG->Uniform(CRange<Real>(0.0, 1.0));
+        break;
+       
+      case GaussianNoise: {
+      case SybilGaussianNoise:
+
+        Real p = m_pcRNG->Gaussian(0.05, 0.0);
+        opinion.quality += p;
+
+        /* Constrain it between 0.0 and 1.0 */
+        if (opinion.quality > 1.0) {
+          opinion.quality = 1.0;
+        }
+
+        if (opinion.quality < 0.0) {
+          opinion.quality = 0.0;
+        }
+        break;
       }
-
-    } else if (byzantineStyle == 4 || byzantineStyle == 14) {
-      opinion.quality = m_pcRNG->Uniform(CRange<Real>(0.0, 1.0));
-
-    } else if (byzantineStyle == 5 || byzantineStyle == 15) {
-      Real p = m_pcRNG->Gaussian(0.05, 0.0);
-      opinion.quality += p;
-
-      /* Constrain it between 0.0 and 1.0 */
-      if (opinion.quality > 1.0)
-        opinion.quality = 1.0;
-
-      if (opinion.quality < 0.0)
-        opinion.quality = 0.0;
     }
-
+    
+    cout << opinion.quality << endl;
     opinion.countedCellOfActualOpinion = 0;
     collectedData.count = 0;
     m_sStateData.State = SStateData::STATE_DIFFUSING;
-
-    int opinionInt = (int)(
-        opinion.quality *
-        10000000); // Convert opinion quality to a value between 0 and 10000000
-
+    
+    // Convert opinion quality to a value between 0 and 10000000
+    int opinionInt = (int) (opinion.quality * 10000000); 
     int argsEmpty[0] = {};
 
     long long wei = 5000000000000000000;
 
-    /* Submit a vote via the new interface*/
-    // TODO: attach wei again just for DEBUGGING!
+    // Submit a vote via the new interface
     int arg = opinionInt;
 
-    cout << " Voting !!" << endl;
-    
     gethInterface->scInterface("vote", arg, 0);
-    //gethInterface->scInterfaceCall0("getMean", 0);
-    //gethInterface->scInterfaceCall0("localCount", 0);
-
-    /* Ask for payout via the new interface*/
 
     CRange<Real> zeroOne(0.0, 1.0);
     Real p = m_pcRNG->Uniform(zeroOne);
+    
+    // Robots have a 10 % chance of calling the payout function
     if (p < 0.1) {
       gethInterface->scInterface("askForPayout", 0);
     }
 
+    // The Byzantine styles between 10 and 20 cause flooding/spamming
     if (byzantineStyle > 10 && byzantineStyle < 20) {
       for (int i = 0; i < simulationParams.maxFlooding - 1; i++) {
 	gethInterface->scInterface("vote", arg, wei);
@@ -274,7 +278,7 @@ void EPuck_Environment_Classification::Explore() {
     }
 
     // Assigning a new exploration and time, for the next exploration state
-    m_sStateData.remainingExplorationTime = 30;
+    m_sStateData.remainingExplorationTime = simulationParams.explorationTime;
     m_sStateData.explorDurationTime = m_sStateData.remainingExplorationTime;
   }
 }
@@ -395,7 +399,6 @@ void EPuck_Environment_Classification::ConnectAndListen() {
     if (tPackets[i]->Data[3] == 1)
       containedJammer = true;
   }
-
   if (containedJammer)
     currentNeighbors.clear();
 

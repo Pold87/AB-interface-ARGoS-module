@@ -6,11 +6,11 @@ TEMPLATE='experiments/epuck_EC_locale_template.argos'
 OUTFILE="experiments/epuck$1.argos"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para$1/data" # always without '/' at the end!!
-NUMROBOTS=(12)
+NUMROBOTS=(20)
 THRESHOLDS=(80000) 
 REPETITIONS=1
 DECISIONRULE=$3
-PERCENT_BLACKS=(40)
+PERCENT_BLACKS=(20)
 MININGDIFF=1000000
 USEMULTIPLENODES=true
 USEBACKGROUNDGETHCALLS=true
@@ -26,11 +26,11 @@ DISTRIBUTEETHER="false"
 CONTAINERNAMEBASE="ethereum_eth."
 CONTRACTADDRESS="${DOCKERBASE}/geth/deployed_contract/contractAddress.txt"
 CONTRACTABI="${DOCKERBASE}/geth/deployed_contract/contractABI.abi"
-NUMBYZANTINE=(0)
+NUMBYZANTINE=(5)
 
 # 1: Always send 0.0 as value
 # 2: Always send 1.0 as value
-# 3: Send 0.0 with probabiity 0.5, send 1.0 else
+# 3: Send 0.0 with probability 0.5, send 1.0 else
 # 4: Send a random number between 0.0 and 1.0
 # 5: Send the true value but apply Gaussian noise to the sensor readings
 # 11: Perform a Sybil and flooding attack, always send 0.0 as value
@@ -124,6 +124,7 @@ fi
 	# Start experiment
 	argos3 -c $OUTFILE
 	
+	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/stop_network.sh $k
 	if [ USECLASSICALAPPROACH == "false" ]; then
 	    
 	    # Clean up
@@ -148,6 +149,6 @@ fi
      done
 
 
-sendmail $mailto < finished.txt
+#sendmail $mailto < finished.txt
      
 done
