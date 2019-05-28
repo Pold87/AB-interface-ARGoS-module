@@ -178,6 +178,14 @@ void GethInterface::scInterface(std::string function, int arg, long long wei) {
   dockerExecBackground(commandStream.str());
 }
 
+void GethInterface::scInterface(std::string function, int arg, std::string wei) {
+  ostringstream commandStream;
+  commandStream << "bash /root/generic_sc_interface_1.sh \'"
+		<< contractABI << "\' " << contractAddress << " "
+		<< function << " " << arg << " " << wei;  
+  dockerExecBackground(commandStream.str());
+}
+
 void GethInterface::scInterfaceCall0(std::string function, long long wei) {
   ostringstream commandStream;
   commandStream << "bash /root/generic_sc_interface_call_0.sh \'"

@@ -3,18 +3,18 @@ USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
 DOCKERBASE='/home/vstrobel/Documents/docker-geth-network/'
 TEMPLATE='experiments/epuck_EC_locale_template.argos'
-OUTFILE="experiments/epuck$1.argos"
+OUTFILE="experiments/epuck.argos"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
-BLOCKCHAINPATH="$HOME/eth_data_para$1/data" # always without '/' at the end!!
+BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 NUMROBOTS=(20)
 THRESHOLDS=(80000) 
-REPETITIONS=1
-DECISIONRULE=$3
-PERCENT_BLACKS=(20)
+REPETITIONS=20
+DECISIONRULE=$1
+PERCENT_BLACKS=(25)
 MININGDIFF=1000000
 USEMULTIPLENODES=true
 USEBACKGROUNDGETHCALLS=true
-MAPPINGPATH="$HOME/Documents/blockchain-journal-bc/experiments/config$1.txt"
+MAPPINGPATH="$HOME/Documents/blockchain-journal-bc/experiments/config.txt"
 CHANGEDIFFIULTY=""
 NUMRUNS=1
 THREADS=1
@@ -26,7 +26,7 @@ DISTRIBUTEETHER="false"
 CONTAINERNAMEBASE="ethereum_eth."
 CONTRACTADDRESS="${DOCKERBASE}/geth/deployed_contract/contractAddress.txt"
 CONTRACTABI="${DOCKERBASE}/geth/deployed_contract/contractABI.abi"
-NUMBYZANTINE=(5)
+NUMBYZANTINE=(1 2 3 4 5 6 7 8 9)
 
 # 1: Always send 0.0 as value
 # 2: Always send 1.0 as value
@@ -40,7 +40,7 @@ NUMBYZANTINE=(5)
 # 15: Perform a Sybil and flooding attack, send the true value but with some Gaussian noise
 # 20: Perform a jamming attack
 
-BYZANTINESWARMSTYLES=( 1 )
+BYZANTINESWARMSTYLES=( 11 )
 MIXINGS=("true")  # mix or tiles or just have a binary field
 MAXFLOODING=20
 SUBSWARMCONSENSUS=false # Determines if all N robots have to agree or
@@ -68,7 +68,7 @@ fi
 	     for MIXING in "${MIXINGS[@]}"; do
 
 		 for BYZANTINESWARMSTYLE in "${BYZANTINESWARMSTYLES[@]}"; do
-		     DATADIRBASE="data/experiment1_decision3_mixing${MIXING}_byzstyle${BYZANTINESWARMSTYLE}-node$1-${NOW}/"		     
+		     DATADIRBASE="data/experiment-payable-_mixing${MIXING}_byzstyle${BYZANTINESWARMSTYLE}-node-${NOW}/"		     
 
 	     DATADIR="${DATADIRBASE}${THRESHOLD}/"
 	     mkdir -p $DATADIR
@@ -125,18 +125,7 @@ fi
 	argos3 -c $OUTFILE
 	
 	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/stop_network.sh $k
-	if [ USECLASSICALAPPROACH == "false" ]; then
-	    
-	    # Clean up
-	    bash "${BLOCKCHAINPATH}/bckillerccall"
-	    bash "killblockchainalldirect $1 $2"
-	    #mkdir -p "${DATADIR}${p}-${i}"
-	    #mv "${BLOCKCHAINPATH}"* "${DATADIR}${p}-${i}"
-	    rm -rf "${BLOCKCHAINPATH}"*
-	    rm $REGENERATEFILE
-	    
-	fi
-	
+
 	 done
 	     done
 	 

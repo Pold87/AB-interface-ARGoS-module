@@ -255,12 +255,17 @@ void EPuck_Environment_Classification::Explore() {
     int opinionInt = (int) (opinion.quality * 10000000); 
     int argsEmpty[0] = {};
 
-    long long wei = 5000000000000000000;
+    //long long wei = 10000000000000000000;
+    
+    	// Corresponds to 10 ether
+    	// string wei = "0x8ac7230489e80000";
+
+    string wei = "0x0";
 
     // Submit a vote via the new interface
     int arg = opinionInt;
 
-    gethInterface->scInterface("vote", arg, 0);
+    gethInterface->scInterface("vote", arg, wei);
 
     CRange<Real> zeroOne(0.0, 1.0);
     Real p = m_pcRNG->Uniform(zeroOne);

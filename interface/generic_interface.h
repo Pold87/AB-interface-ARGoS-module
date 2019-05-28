@@ -30,6 +30,7 @@ public:
   void execTemplate(std::string templateName);
   void scInterface(std::string function, long long wei);
   void scInterface(std::string function, int arg, long long wei);
+  void scInterface(std::string function, int arg, std::string wei);
   void scInterfaceCall0(std::string function, long long wei);
   std::string scReturn0(std::string function, long long wei);
   void execTemplate(std::string templateName, int numArgs, int args[], long long wei);
