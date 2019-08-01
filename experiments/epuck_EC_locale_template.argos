@@ -80,7 +80,7 @@
 	  exit="true"            
 	  percent_black="PERCENT_BLACK"
 	  percent_red="0"
-	  save_every_ticks="1000"
+	  save_every_ticks="50"
 	  save_every_ticks_flag="true"
 	  save_every_run_flag="true"
 	  save_blockchain_flag="true"
