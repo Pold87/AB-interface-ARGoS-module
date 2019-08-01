@@ -143,6 +143,9 @@ void EPuck_Environment_Classification::prepare() {
 
 void EPuck_Environment_Classification::ControlStep() {
 
+  if (consensusReached)
+    cout << "Consensus has been reached !!!" << endl;
+  
   ConnectAndListen();
   TurnLeds();
   Move();
@@ -271,9 +274,10 @@ void EPuck_Environment_Classification::Explore() {
     Real p = m_pcRNG->Uniform(zeroOne);
     
     // Robots have a 10 % chance of calling the payout function
-    if (p < 0.1) {
-      gethInterface->scInterface("askForPayout", 0);
-    }
+    // TODO: not used anymore, I just included it in the vote function
+    //if (p < 0.1) {
+    //  gethInterface->scInterface("askForPayout", 0);
+    //}
 
     // The Byzantine styles between 10 and 20 cause flooding/spamming
     if (byzantineStyle > 10 && byzantineStyle < 20) {
@@ -383,9 +387,7 @@ void EPuck_Environment_Classification::WaitForDecision() {
   string eventResult;
 
   cout << "Robot id is " << robotId << endl;
-  // TODO: Get eventResult here
-  // eventResult = eventInterfaceConsensus(robotId, interface, contractAddress,
-  // nodeInt, simulationParams.blockchainPath);
+  consensusReached = gethInterface->isConsensusReached();
 
   threadCurrentlyRunning = false;
 }

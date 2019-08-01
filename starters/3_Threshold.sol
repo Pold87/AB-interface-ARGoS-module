@@ -21,7 +21,7 @@ THREADS=1
 NOW=`date +"%d-%m-%Y"`
 # The miner node is the first of the used nodes
 USECLASSICALAPPROACH=false
-DETERMINECONSENSUS="false"
+DETERMINECONSENSUS="true"
 DISTRIBUTEETHER="false"
 CONTAINERNAMEBASE="ethereum_eth."
 CONTRACTADDRESS="${DOCKERBASE}/geth/deployed_contract/contractAddress.txt"

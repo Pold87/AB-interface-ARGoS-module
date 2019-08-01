@@ -46,6 +46,10 @@ public:
   std::string getEnode();
   std::string getBootstrap();
   std::string getContainerExtension(std::string cn, std::string containerName);
+
+  // Events
+  bool isConsensusReached();
+  
   void wrapSSH(std::string cmd);
 };
 #endif

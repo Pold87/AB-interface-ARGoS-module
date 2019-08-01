@@ -299,6 +299,42 @@ void GethInterface::setContractABI(std::string abi) {
   contractABI = readStringFromFile(abi);
 }
 
+// Checks if a consensus was reached using the event interface
+bool GethInterface::isConsensusReached() {
+
+  ostringstream commandStream;
+  // TODO: generic_event_interface_call_0 is not generic yet!
+  commandStream << "bash /root/generic_event_interface_call_0.sh \'"
+		<< contractABI << "\' " << contractAddress;
+
+  string s = dockerExecReturn(commandStream.str());
+  cout << "s is " << s << endl;
+
+  // For atoi, the input string has to start with a digit, so let's
+  // search for the first digit
+  size_t i = 0;
+  for ( ; i < s.length(); i++ ) {
+    if (isdigit(s[i])) break;
+  }
+
+  // remove the first chars, which aren't digits
+  s = s.substr(i, s.length() - i );
+
+  // convert the remaining text to an integer
+  int id = atoi(s.c_str());
+ 
+  std::ostringstream ss;
+  ss << id;
+
+  cout << "Eventinterface is " << ss.str() << endl;
+  
+  if (ss.str() == 2) {
+    return true;
+  } else {
+    return false;
+  }  
+}
+
 std::string GethInterface::getContainerExtension(string cn, string containerName) {
   ostringstream commandStream;
   commandStream << "docker service ps -f \'name="
