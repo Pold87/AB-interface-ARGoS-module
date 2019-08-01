@@ -52,7 +52,7 @@ public:
   };
 
   struct SimulationState {
-    UInt32 decision_rule;
+    UInt32 decisionRule;
     Real percentRed, percentBlue;
     Real g;
     Real sigma;

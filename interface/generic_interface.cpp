@@ -105,6 +105,8 @@ string GethInterface::dockerExecReturn(const string cmd) {
     		<< containerNameFull << " "
 		<< cmd;
 
+  cout << commandStream.str() << endl;
+
   string result = exec(commandStream.str());
   return result;
 }
@@ -128,7 +130,9 @@ void GethInterface::dockerExecBackground(const string cmd) {
   commandStream << "docker exec -i "
   		<< containerNameFull << " "
  		<< cmd << " 2>&1 > /dev/null &";
-   
+  
+  cout << commandStream.str() << endl;
+ 
   system(commandStream.str().c_str());
 }
 

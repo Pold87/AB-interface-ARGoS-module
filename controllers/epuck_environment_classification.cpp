@@ -38,7 +38,7 @@ void EPuck_Environment_Classification::SimulationState::Init(
     GetNodeAttribute(t_node, "sigma", sigma);
     GetNodeAttribute(t_node, "lambda", LAMBDA);
     GetNodeAttribute(t_node, "turn", turn);
-    GetNodeAttribute(t_node, "decision_rule", decision_rule);
+    GetNodeAttribute(t_node, "decision_rule", decisionRule);
     GetNodeAttribute(t_node, "exitFlag", exitFlag);
     GetNodeAttribute(t_node, "percent_white", percentRed);
     GetNodeAttribute(t_node, "percent_black", percentBlue);
@@ -166,7 +166,7 @@ void EPuck_Environment_Classification::ControlStep() {
 void EPuck_Environment_Classification::Explore() {
 
   /* 20 is for jamming */
-  if (byzantineStyle == 20) {
+  if (byzantineStyle == Jamming) {
     CCI_EPuckRangeAndBearingActuator::TData toSend;
     toSend[0] = robotId;
     toSend[1] = 0;
@@ -257,10 +257,10 @@ void EPuck_Environment_Classification::Explore() {
 
     //long long wei = 10000000000000000000;
     
-    	// Corresponds to 10 ether
-    	// string wei = "0x8ac7230489e80000";
+   // Corresponds to 10 ether
+    string wei = "0x22B1C8C1227A00000";
 
-    string wei = "0x0";
+   // string wei = "0x0";
 
     // Submit a vote via the new interface
     int arg = opinionInt;

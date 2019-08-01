@@ -221,9 +221,9 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
       EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
 
       mean = cController.getGethInterface().scReturn0("getMean", 0);
-      localCount = cController.getGethInterface().scReturn0("voteCount", 0);    
+      //localCount = cController.getGethInterface().scReturn0("voteCount", 0);    
       localCount = cController.getGethInterface().scReturn0("weightCount", 0);    
-      localCount = cController.getGethInterface().scReturn0("localCount", 0);    
+      //localCount = cController.getGethInterface().scReturn0("localCount", 0);    
       cout << "Getting weight" << endl;
       weight = cController.getGethInterface().scReturn0("getWeight", 0);
       }
