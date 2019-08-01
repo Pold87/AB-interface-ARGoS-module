@@ -387,7 +387,11 @@ void EPuck_Environment_Classification::WaitForDecision() {
   string eventResult;
 
   cout << "Robot id is " << robotId << endl;
-  consensusReached = gethInterface->isConsensusReached();
+  string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
+  if (consensusReachedStr.find("2") != std::string::npos) {
+    consensusReached = true;
+    cout << "A consensus was reached" << endl;
+}
 
   threadCurrentlyRunning = false;
 }
