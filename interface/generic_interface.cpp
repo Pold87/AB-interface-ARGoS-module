@@ -328,7 +328,7 @@ bool GethInterface::isConsensusReached() {
 
   cout << "Eventinterface is " << ss.str() << endl;
   
-  if (ss.str() == 2) {
+  if (ss.str() == "2") {
     return true;
   } else {
     return false;
