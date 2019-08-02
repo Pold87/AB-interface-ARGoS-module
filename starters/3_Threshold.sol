@@ -3,14 +3,17 @@ USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
 DOCKERBASE='/home/vstrobel/Documents/docker-geth-network/'
 TEMPLATE='experiments/epuck_EC_locale_template.argos'
+CONTRACT="${DOCKERBASE}/geth/shared/smart_contract_threshold.sol"
+SCTEMPLATE="${DOCKERBASE}/geth/shared/3_Threshold.sol_template"
 OUTFILE="experiments/epuck.argos"
+SCOUTFILE="${DOCKERBASE}/geth/shared/3_Threshold.sol"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 NUMROBOTS=(20)
-THRESHOLDS=(80000) 
+TAUS=(100000 200000 300000 400000 500000) 
 REPETITIONS=30
 DECISIONRULE=$1
-PERCENT_BLACKS=(0 10 20 30 40 50 60 70 80 90 100)
+PERCENT_BLACKS=(25)
 MININGDIFF=1000000
 USEMULTIPLENODES=true
 USEBACKGROUNDGETHCALLS=true
@@ -54,14 +57,14 @@ REALTIME="true"
 
      for y in "${NUMBYZANTINE[@]}"; do
 
-	 for THRESHOLD in "${THRESHOLDS[@]}"; do
+	 for TAU in "${TAUS[@]}"; do
 
 	     for MIXING in "${MIXINGS[@]}"; do
 
 		 for BYZANTINESWARMSTYLE in "${BYZANTINESWARMSTYLES[@]}"; do
 		     DATADIRBASE="data/payable-_mixing${MIXING}_byzstyle${BYZANTINESWARMSTYLE}-node-${NOW}/"		     
 
-	     DATADIR="${DATADIRBASE}${THRESHOLD}/"
+	     DATADIR="${DATADIRBASE}${TAU}/"
 	     mkdir -p $DATADIR
 	     
  
@@ -76,8 +79,14 @@ REALTIME="true"
 	PERCENT_WHITE=$(expr 100 - $PERCENT_BLACK)
 	
 	RADIX=$(printf 'num%d_black%d_byz%d_run%d' $k $PERCENT_BLACK $y $i)
-	
-	# Create template
+
+        # Create smart contract with specified tau (threshold)
+	  rm ${SCOUTFILE} ${CONTRACT}          
+	  sed -e "s|TAU|$TAU|g" ${SCTEMPLATE} > ${SCOUTFILE}
+          ln -s ${SCOUTFILE} ${CONTRACT}         	  				    
+	  
+	  
+	# Create ARGoS template
 	sed -e "s|BASEDIR|$BASEDIR|g"\
 	    -e "s|CONTRACTADDRESS|$CONTRACTADDRESS|g"\
 	    -e "s|CONTRACTABI|$CONTRACTABI|g"\
