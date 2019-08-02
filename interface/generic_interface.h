@@ -46,6 +46,7 @@ public:
   std::string getEnode();
   std::string getBootstrap();
   std::string getContainerExtension(std::string cn, std::string containerName);
+  std::string getBlockChainSize();
 
   // Events
   bool isConsensusReached();

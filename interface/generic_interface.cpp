@@ -350,3 +350,8 @@ std::string GethInterface::getContainerExtension(string cn, string containerName
   
   return id;
 }
+
+string GethInterface::getBlockChainSize() {
+  string res = dockerExecReturn("du /root/.ethereum/devchain/geth/chaindata/");
+  return res;
+}

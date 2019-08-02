@@ -206,7 +206,7 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
 
     cout << "Random number is " << selRobot << endl;
     
-    string mean, localCount, voteCount, weight;
+    string mean, localCount, voteCount, weight, blockchainSize;
 
     CSpace::TMapPerType& m_cEpuck = GetSpace().GetEntitiesByType("epuck");
     for(CSpace::TMapPerType::iterator it = m_cEpuck.begin(); it != m_cEpuck.end(); ++it) {
@@ -223,7 +223,10 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
       mean = cController.getGethInterface().scReturn0("getMean", 0);
       //localCount = cController.getGethInterface().scReturn0("voteCount", 0);    
       localCount = cController.getGethInterface().scReturn0("weightCount", 0);    
-      //localCount = cController.getGethInterface().scReturn0("localCount", 0);    
+      //localCount = cController.getGethInterface().scReturn0("localCount", 0);
+
+      blockchainSize = cController.getGethInterface().getBlockChainSize();
+      
       cout << "Getting weight" << endl;
       weight = cController.getGethInterface().scReturn0("getWeight", 0);
       }
@@ -231,7 +234,7 @@ void CEnvironmentClassificationLoopFunctions::getAndWriteStats() {
     }
 
     if (blockChainFile.is_open()) {
-      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << endl;
+      blockChainFile << GetSpace().GetSimulationClock() << "\t" << mean << "\t" << localCount << "\t" << blockchainSize << endl;
     }
     
     if (everyTicksFile.is_open()) {
