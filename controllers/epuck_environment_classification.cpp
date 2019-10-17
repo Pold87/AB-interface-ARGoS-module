@@ -65,6 +65,7 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   receivedDecision = true;
   threadCurrentlyRunning = false;
   consensusReached = false;
+  scMean = 0;
 
   // Initialize the actuators (and sensors) and the initial velocity as straight
   // walking
@@ -259,9 +260,25 @@ void EPuck_Environment_Classification::Explore() {
     int argsEmpty[0] = {};
 
     //long long wei = 10000000000000000000;
-    
-   // Corresponds to 10 ether
-    string wei = "0x22B1C8C1227A00000";
+   
+    string wei;
+    if (scMean == 0) {
+      wei = "0x22B1C8C1227A00000";
+    } else {
+
+    long long ticketPrice;
+  
+    ticketPrice = (scMean - opinionInt) * (scMean - opinionInt) * 10000000;
+    ticketPrice += 1000000000000000000;
+
+    std::stringstream ssHex;
+    ssHex << "0x" << std::hex << ticketPrice; // int decimal_value
+    wei = ssHex.str();
+   }
+
+   cout << "ticketPrice is " << wei << endl;
+   // Corresponds to 40 ether
+    //string wei = "0x22B1C8C1227A00000";
 
    // string wei = "0x0";
 
@@ -388,10 +405,16 @@ void EPuck_Environment_Classification::WaitForDecision() {
 
   cout << "Robot id is " << robotId << endl;
   string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
+  string scMeanString = getGethInterface().scReturn0("getMean", 0);
+  scMean = stoi(scMeanString);
+
+
   if (consensusReachedStr.find("2") != std::string::npos) {
     consensusReached = true;
     cout << "A consensus was reached" << endl;
-}
+  } else {
+    cout << "The results from WaitForDecision was " << consensusReachedStr << endl;
+  }
 
   threadCurrentlyRunning = false;
 }

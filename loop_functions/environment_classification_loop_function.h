@@ -175,7 +175,7 @@ private:
   bool useClassicalApproach;
   int lengthOfRuns;
   bool subswarmConsensus;
-  bool colorMixing;
+  int colorMixing;
   bool determineConsensus;
 };
 

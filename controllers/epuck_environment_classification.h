@@ -146,6 +146,7 @@ public:
 
 private:
   int robotId;
+  int scMean;
   GethInterface *gethInterface;
   void WaitForDecision();
   CCI_EPuckWheelsActuator *m_pcWheels;

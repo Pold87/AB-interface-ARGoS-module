@@ -112,7 +112,7 @@ void CEnvironmentClassificationLoopFunctions::InitRobots()
     robotsInDiffusionCounter[i] = 0;
   }
 
-  if (colorMixing)
+  if (colorMixing == 2)
   {
 
     int temp1;
@@ -339,7 +339,7 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
       
       m_strOutput = dataDir + passedRadix +"-blockchain.RUN" + nRuns;
       blockChainFile.open(m_strOutput.c_str(), std::ios_base::trunc | std::ios_base::out);
-      blockChainFile << "clock\tmean\tSE\tcount\tblockchain_size_KB" << std::endl;
+      blockChainFile << "clock\tmean\tcount\tblockchain_size_KB\tblockchain_path" << std::endl;
     }
     
     /*
