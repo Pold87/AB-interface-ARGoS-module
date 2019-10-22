@@ -66,6 +66,7 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   threadCurrentlyRunning = false;
   consensusReached = false;
   scMean = 0;
+  useFixedEther = true;
 
   // Initialize the actuators (and sensors) and the initial velocity as straight
   // walking
@@ -262,7 +263,7 @@ void EPuck_Environment_Classification::Explore() {
     //long long wei = 10000000000000000000;
    
     string wei;
-    if (scMean == 0) {
+    if (scMean == 0 || useFixedEther) {
       wei = "0x22B1C8C1227A00000";
     } else {
 
@@ -405,9 +406,11 @@ void EPuck_Environment_Classification::WaitForDecision() {
 
   cout << "Robot id is " << robotId << endl;
   string consensusReachedStr = gethInterface->scReturn0("consensusReached", 0);
-  string scMeanString = getGethInterface().scReturn0("getMean", 0);
-  scMean = stoi(scMeanString);
 
+  if (!useFixedEther) {
+    string scMeanString = getGethInterface().scReturn0("getMean", 0);
+    scMean = stoi(scMeanString);
+  }
 
   if (consensusReachedStr.find("2") != std::string::npos) {
     consensusReached = true;

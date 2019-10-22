@@ -184,6 +184,7 @@ private:
   bool consensusReached;
   bool receivedDecision;
   CColor red, blue, green;
+  bool useFixedEther;
 };
 
 #endif
