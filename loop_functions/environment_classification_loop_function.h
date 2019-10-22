@@ -1,9 +1,9 @@
 #ifndef ENVIRONMENT_CLASSIFICATION_LOOP_FUNCTION_H
 #define ENVIRONMENT_CLASSIFICATION_LOOP_FUNCTION_H
 #define NUM_OF_CELLS     400
-#define X_DIMENSION      2.0f
-#define Y_DIMENSION 	 2.0f
-#define CELL_DIMENSION	 0.1f
+#define X_DIMENSION      10.0f
+#define Y_DIMENSION 	 10.0f
+#define CELL_DIMENSION	 0.5f
 #define N_COL		 3
 #include <argos3/core/simulator/loop_functions.h>
 #include <argos3/core/simulator/entity/floor_entity.h>
