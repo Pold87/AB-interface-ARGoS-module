@@ -1,9 +1,6 @@
 #ifndef ENVIRONMENT_CLASSIFICATION_LOOP_FUNCTION_H
 #define ENVIRONMENT_CLASSIFICATION_LOOP_FUNCTION_H
 #define NUM_OF_CELLS     400
-#define X_DIMENSION      10.0f
-#define Y_DIMENSION 	 10.0f
-#define CELL_DIMENSION	 0.5f
 #define N_COL		 3
 #include <argos3/core/simulator/loop_functions.h>
 #include <argos3/core/simulator/entity/floor_entity.h>
@@ -25,34 +22,11 @@ using namespace argos;
 class CEnvironmentClassificationLoopFunctions : public CLoopFunctions {
 
 	public:
-		CEnvironmentClassificationLoopFunctions();
-		virtual ~CEnvironmentClassificationLoopFunctions(){}
+  CEnvironmentClassificationLoopFunctions();
+  virtual ~CEnvironmentClassificationLoopFunctions(){}
 
-		virtual void Init(TConfigurationNode& t_node);
-		virtual CColor GetFloorColor(const CVector2& c_pos_on_floor) {
-			UInt32 x;
-			UInt32 y;
-			UInt32 i;
-
-			if ((c_pos_on_floor.GetX() > Y_DIMENSION) || (c_pos_on_floor.GetY() > X_DIMENSION))
-				return CColor::YELLOW;
-
-			x = (UInt32)(((Real)c_pos_on_floor.GetX())/(Real)CELL_DIMENSION);
-			y = (UInt32)(((Real)c_pos_on_floor.GetY())/(Real)CELL_DIMENSION);
-
-			i=(UInt32) (y*20 + x);
-
-			switch ( grid[i])
-			{
-				case 0:
-					return CColor::RED;
-				case 1:
-					return CColor::WHITE;
-				case 2:
-					return CColor::BLACK;
-			}
-			return CColor::YELLOW;
-		}
+  virtual void Init(TConfigurationNode& t_node);
+  virtual CColor GetFloorColor(const CVector2& c_pos_on_floor);
 
 		inline UInt32 GetGrid(UInt32 i) {
 			return grid[i];
@@ -82,12 +56,16 @@ private:
   /* Variable of the environment, help variables and experiment finished signal */
   CRange<Real> zeroOne;
   CRange<Real> bigRange;
-  CRange<Real> arenaSizeRangeX;
-  CRange<Real> arenaSizeRangeY;
+  CRange<Real> arenaSizeRange;
   CRandom::CRNG* m_pcRNG;
   bool m_bExperimentFinished;
   CFloorEntity* m_pcFloor;
   UInt32 colorOfCell[N_COL], grid[NUM_OF_CELLS]; // Cells colors and grid with all the arenas cells
+
+  int totalCells;
+  Real arenaSize;
+  double cellDimension;
+
   
   /* Defined colours (they are defined because like that there is the possibility to change
    * in every way. By the way, argos colors are usable

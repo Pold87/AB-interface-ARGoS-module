@@ -68,6 +68,13 @@ for i in `seq 1 $REPETITIONS`; do
 	    -e "s|DETERMINECONSENSUS|$DETERMINECONSENSUS|g"\
 	    -e "s|DISTRIBUTEETHER|$DISTRIBUTEETHER|g"\
 	    -e "s|CONTAINERNAMEBASE|$CONTAINERNAMEBASE|g"\
+	    -e "s|ARENASIZEDIM|$ARENASIZEDIM|g"\
+	    -e "s|ARENASIZEPLUSLARGE|$ARENASIZEPLUSLARGE|g"\
+	    -e "s|ARENASIZEPLUSSMALL|$ARENASIZEPLUSSMALL|g"\
+	    -e "s|ARENASIZEHALF|$ARENASIZEHALF|g"\
+	    -e "s|ARENASIZEMINUS|$ARENASIZEMINUS|g"\
+	    -e "s|CELLDIMENSION|$CELLDIMENSION|g"\
+	    
 	    $TEMPLATE > $OUTFILE
 	
 	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/stop_network.sh $k

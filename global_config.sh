@@ -19,6 +19,17 @@ LENGTHOFRUNS=(1000)
 
 MIXINGS=1
 
+ARENASIZEDIM="20.0"
+CELLDIMENSION="1"
+# Cell dimension should be ARENASIZE / 20 for 400 tiles
+# The cell dimension can be changed, this will result in more or less tiles
+# HOWEVER!!: Then you also have to change header file value for TOTAL_CELLS
+ARENASIZEPLUSLARGE=`echo $ARENASIZEDIM + 0.1 | bc`
+ARENASIZEPLUSSMALL=`echo $ARENASIZEDIM + 0.0075 | bc`
+ARENASIZEHALF=`echo $ARENASIZEDIM / 2 | bc`
+ARENASIZEMINUS=`echo $ARENASIZEDIM - 0.1 | bc`
+
+
 MININGDIFF=1000000
 USEMULTIPLENODES=true
 USEBACKGROUNDGETHCALLS=true
