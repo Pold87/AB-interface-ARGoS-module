@@ -6,11 +6,8 @@
 
 #include <time.h>
 
-#define TOTAL_CELLS 400
-#define ENVIRONMENT_CELL_DIMENSION 5000.0f
 #define N_COL 3
-#define ARENA_SIZE_X 9.9f
-#define ARENA_SIZE_Y 9.9f
+
 #define DEBUGLOOP true
 
 /****************************************/
@@ -19,8 +16,6 @@ CEnvironmentClassificationLoopFunctions::CEnvironmentClassificationLoopFunctions
 
   zeroOne(0.0f,1.0f),
   bigRange(0.0f,30000.0f),
-  arenaSizeRangeX(0.0f, ARENA_SIZE_X),
-  arenaSizeRangeY(0.0f, ARENA_SIZE_Y),
   m_bExperimentFinished(false),
   m_pcFloor(NULL)
 {
@@ -34,6 +29,34 @@ static const int maxContractAddressTrials = 50; /* Repeats getting the contract 
 static const int trialsMiningNotWorking = 40; /* If after x trials the number of white votes is still zero  */
 
 
+
+CColor CEnvironmentClassificationLoopFunctions::GetFloorColor(const CVector2& c_pos_on_floor){
+  UInt32 x;
+  UInt32 y;
+  UInt32 i;
+  
+  if ((c_pos_on_floor.GetX() > arenaSize) || (c_pos_on_floor.GetY() > arenaSize))
+    return CColor::YELLOW;
+  
+    x = (UInt32)(((Real)c_pos_on_floor.GetX())/(Real)cellDimension);
+    y = (UInt32)(((Real)c_pos_on_floor.GetY())/(Real)cellDimension);
+    
+    i=(UInt32) (y*20 + x);
+    
+    switch ( grid[i])
+      {
+      case 0:
+	return CColor::RED;
+      case 1:
+	return CColor::WHITE;
+      case 2:
+	return CColor::BLACK;
+      }
+    return CColor::YELLOW;
+  }
+
+
+
 void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& tEnvironment)
 {
   try
@@ -42,6 +65,12 @@ void CEnvironmentClassificationLoopFunctions::fillSettings(TConfigurationNode& t
     GetNodeAttribute(tEnvironment, "number_of_red_cells", colorOfCell[0]);
     GetNodeAttribute(tEnvironment, "number_of_white_cells", colorOfCell[1]);
     GetNodeAttribute(tEnvironment, "number_of_black_cells",colorOfCell[2]);
+
+
+    GetNodeAttribute(tEnvironment, "arena_size", arenaSize);
+    GetNodeAttribute(tEnvironment, "cell_dimension", cellDimension);
+
+    
     GetNodeAttribute(tEnvironment, "percent_red", percentageOfColors[0]);
     GetNodeAttribute(tEnvironment, "percent_white", percentageOfColors[1]);
     GetNodeAttribute(tEnvironment, "percent_black", percentageOfColors[2]);
@@ -118,7 +147,7 @@ void CEnvironmentClassificationLoopFunctions::InitRobots()
     /* Mix the colours in the vector of cells to avoid the problem of eventual correlations*/
     for (int k = 0; k < 8; k++)
     {
-      for (int i = TOTAL_CELLS-1; i >= 0; --i)
+      for (int i = totalCells - 1; i >= 0; --i)
       {
         int j = ((int)m_pcRNG->Uniform(bigRange)%(i+1));
         temp1 = grid[i];
@@ -252,6 +281,8 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
 
   TConfigurationNode& tEnvironment = GetNode(t_node, "cells");
   fillSettings(tEnvironment);
+
+  totalCells = (arenaSize / cellDimension) * (arenaSize / cellDimension);
   
   time_t ti;
   time(&ti);
@@ -270,7 +301,7 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
   {
     for( int c = 0; c < N_COL; c++ )
     {
-      colorOfCell[c] = (int)(percentageOfColors[c]*((Real)TOTAL_CELLS/100.0));
+      colorOfCell[c] = (int)(percentageOfColors[c]*((Real)totalCells/100.0));
       cout << "Color: " << colorOfCell[c] << endl;
     }
   }
@@ -279,7 +310,7 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
    * Check: number of robots = sum of the initial opinions
    *        number of colors cells sums up to the total number of cells
    */
-  if((n_robots == initialOpinions[0]+initialOpinions[1]+initialOpinions[2])&&(colorOfCell[0]+colorOfCell[1]+colorOfCell[2] == TOTAL_CELLS))
+  if((n_robots == initialOpinions[0]+initialOpinions[1]+initialOpinions[2])&&(colorOfCell[0]+colorOfCell[1]+colorOfCell[2] == totalCells))
   {
     consensusReached = N_COL;
     /* Multiply sigma and G per 10, so that they will be transformed into ticks (were inserted as  seconds) */
@@ -293,7 +324,7 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
       int myrow;
       // Create regular grid
       if (colorMixing == 3) {
-	while ( k <  TOTAL_CELLS) {
+	while ( k <  totalCells) {
 
 	  myrow = k / 20;
 
@@ -626,25 +657,25 @@ void CEnvironmentClassificationLoopFunctions::AssignNewStateAndPosition()
   {
     CEPuckEntity& cEpuck = *any_cast<CEPuckEntity*>(it->second);
     EPuck_Environment_Classification& cController =  dynamic_cast<EPuck_Environment_Classification&>(cEpuck.GetControllableEntity().GetController());
-    CQuaternion cNewOrientation = cEpuck. GetEmbodiedEntity().GetOriginAnchor().Orientation;
+    // CQuaternion cNewOrientation = cEpuck. GetEmbodiedEntity().GetOriginAnchor().Orientation;
 
-    /* Generating Uniformly distribuited x and y coordinates for the new position of the robot */
-    Real xp = m_pcRNG->Uniform(arenaSizeRangeX);
-    Real yp = m_pcRNG->Uniform(arenaSizeRangeY);
-    CVector3 cNewPosition = CVector3(xp,yp,0.1f);
+    // /* Generating Uniformly distribuited x and y coordinates for the new position of the robot */
+    // Real xp = m_pcRNG->Uniform(arenaSizeRangeX);
+    // Real yp = m_pcRNG->Uniform(arenaSizeRangeY);
+    // CVector3 cNewPosition = CVector3(xp,yp,0.1f);
 
-    UInt32 i, unMaxRepositioningTrials = 100;
+    // UInt32 i, unMaxRepositioningTrials = 100;
 
-    for(i = 0; i < unMaxRepositioningTrials; i++)
-    {
-      if(cEpuck.GetEmbodiedEntity().MoveTo(cNewPosition, cNewOrientation, false)) break;
+    // for(i = 0; i < unMaxRepositioningTrials; i++)
+    // {
+    //   if(cEpuck.GetEmbodiedEntity().MoveTo(cNewPosition, cNewOrientation, false)) break;
 
-      xp = m_pcRNG->Uniform(arenaSizeRangeX);
-      yp = m_pcRNG->Uniform(arenaSizeRangeY);
+    //   xp = m_pcRNG->Uniform(arenaSizeRangeX);
+    //   yp = m_pcRNG->Uniform(arenaSizeRangeY);
 
-      cNewPosition.SetX(xp);
-      cNewPosition.SetY(yp);
-    }
+    //   cNewPosition.SetX(xp);
+    //   cNewPosition.SetY(yp);
+    // }
 
     /* Resetting initial state of the robots: exploring for everyone */
     cController.GetStateData().State = EPuck_Environment_Classification::SStateData::STATE_EXPLORING;
@@ -873,8 +904,8 @@ void CEnvironmentClassificationLoopFunctions::PreStep()
     CVector2 cPos;
     cPos.Set(x,y);						// Vector position of the robot
     /* Figure out in which cell (EG: which is the index of the array grid) the robot is */
-    UInt32 cell = (UInt32) ((y+0.009)*10000)/(Real)ENVIRONMENT_CELL_DIMENSION;
-    cell = (UInt32) 40*cell + ((x+0.009)*10000)/(Real)ENVIRONMENT_CELL_DIMENSION;
+    UInt32 cell = (UInt32) ((y+0.009)*10000)/(Real) (cellDimension * 100000);
+    cell = (UInt32) 40*cell + ((x+0.009)*10000)/(Real)(cellDimension * 100000);
 
     /* Get parameters of the robot: color, state, opinion and movement datas*/
     EPuck_Environment_Classification::CollectedData& collectedData = cController.GetColData();
