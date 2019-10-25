@@ -387,6 +387,103 @@ void CEnvironmentClassificationLoopFunctions::Init(TConfigurationNode& t_node) {
 	
 	k++;
 	}	
+
+      } if (colorMixing == 4) {
+
+	int acc = 0;
+	
+	int col1 = 1;
+	int col2 = 2;
+
+	int goal = 0;
+	int myrow;
+	
+	for ( int i = 0; i < N_COL; i++ ) {
+	  for( int j = 0; j < colorOfCell[i] ; j++,k++ ) {
+	    
+
+	    myrow = k / 20;
+
+	    goal = myrow % 10;
+
+	    int percent = (int) percentageOfColors[2];
+	    
+	    switch (percent) {
+
+	    case 0:
+	      grid[k] = 1;
+	      break;
+	    case 10:
+	    if (k % 10 == goal) {
+	      grid[k] = 2;
+	    } else {
+	      grid[k] = 1;
+	    }	      
+	      break;
+	    case 20:
+	    if (k % 10 == goal || k % 10 == (goal + 5) % 10) {
+	      grid[k] = 2;
+	    } else {
+	      grid[k] = 1;
+	    }	      	      
+	      break;
+	    case 30:
+	    if (k % 10 == goal || k % 10 == (goal + 3) % 10 || k % 10 == (goal + 6) % 10) {
+	      grid[k] = 2;
+	    } else {
+	      grid[k] = 1;
+	    }	      	      	      
+	      break;
+	    case 40:
+	    if (k % 10 == goal || k % 10 == (goal + 3) % 10 || k % 10 == (goal + 6) % 10 | k % 10 == (goal + 8) % 10) {
+	      grid[k] = 2;
+	    } else {
+	      grid[k] = 1;
+	    }	      	      	      	      
+	      break;
+	    case 50:
+	    if (k % 10 == goal || k % 10 == (goal + 2) % 10 || k % 10 == (goal + 4) % 10 || k % 10 == (goal + 6) % 10 || k % 10 == (goal + 8) % 10) {
+	      grid[k] = 2;
+	    } else {
+	      grid[k] = 1;
+	    }	      
+	      break;
+	    case 60:
+	    if (k % 10 == goal || k % 10 == (goal + 3) % 10 || k % 10 == (goal + 6) % 10 | k % 10 == (goal + 8) % 10) {
+	      grid[k] = 1;
+	    } else {
+	      grid[k] = 2;
+	    }	      	      	      	      	      
+	      break;
+	    case 70:
+	    if (k % 10 == goal || k % 10 == (goal + 3) % 10 || k % 10 == (goal + 6) % 10) {
+	      grid[k] = 1;
+	    } else {
+	      grid[k] = 2;
+	    }	      	      	      
+	      break;
+	    case 80:
+	    if (k % 10 == goal || k % 10 == (goal + 5) % 10) {
+	      grid[k] = 1;
+	    } else {
+	      grid[k] = 2;
+	    }	      	      	      
+	      break;
+	    case 90:
+	    if (k % 10 == goal) {
+	      grid[k] = 1;
+	    } else {
+	      grid[k] = 2;
+	    }	      	      
+	      break;
+	    case 100:
+	      grid[k] = 2;
+	      break;
+	    }
+	    
+	  }
+	}
+		
 	
       } else {
 
