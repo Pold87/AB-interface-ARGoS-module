@@ -1,3 +1,5 @@
+# ARGoS-Blockchain interface (ARGoS part)
+
 This module allows for running the ARGoS robot simulations described
 in the article [Blockchain Technology Secures Robot Swarms: A
 Comparison of Consensus Protocols and Their Resilience to Byzantine
@@ -12,7 +14,7 @@ https://github.com/Pold87/ARGoS-Blockchain-interface/
 ## Overview of the framework
 ![Overview](img/interface.png?raw=true "Overview")
 
-# Setup
+## Setup
 
 ```
 mkdir build
@@ -21,11 +23,11 @@ cmake ..
 make
 ```
 
-# Run
+## Run
 
 Use one of the starter scripts in the folder `starters`.
 
-# Folder structure
+## Folder structure
 
 * `/home/vstrobel/Documents/docker-geth-network/geth/shared/` contains
 the smart contracts,
