@@ -2,7 +2,7 @@
 
 USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
-DOCKERBASE='/home/vstrobel/Documents/docker-geth-network/'
+DOCKERBASE='/home/volker/mygithub-software/ARGoS-Blockchain-interface/'
 TEMPLATE='experiments/epuck_EC_locale_template.argos'
 CONTRACT="${DOCKERBASE}/geth/shared/smart_contract_threshold.sol"
 SCTEMPLATE="${DOCKERBASE}/geth/shared/3_Threshold.sol_template"
