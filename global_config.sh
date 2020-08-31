@@ -2,7 +2,7 @@
 
 USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
-DOCKERBASE='/home/volker/mygithub-software/ARGoS-Blockchain-interface/'
+DOCKERBASE='/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface/'
 TEMPLATE='experiments/epuck_EC_locale_template.argos'
 CONTRACT="${DOCKERBASE}/geth/shared/smart_contract_threshold.sol"
 SCTEMPLATE="${DOCKERBASE}/geth/shared/3_Threshold.sol_template"
@@ -12,14 +12,15 @@ BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 
 DECISIONRULE=$1
-NUMROBOTS=(20)
+NUMROBOTS=(4)
 REPETITIONS=30
 TAUS=(1000000)
 LENGTHOFRUNS=(1000)
 
 MIXINGS=1
+VISUALIZATION=visualization #visualization or none
 
-ARENASIZEDIM="20.0"
+ARENASIZEDIM="2.0"
 CELLDIMENSION="1"
 # Cell dimension should be ARENASIZE / 20 for 400 tiles
 # The cell dimension can be changed, this will result in more or less tiles

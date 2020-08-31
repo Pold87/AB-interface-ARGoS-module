@@ -36,10 +36,10 @@ for i in `seq 1 $REPETITIONS`; do
 	  rm ${SCOUTFILE} ${CONTRACT}          
 	  sed -e "s|TAU|$TAU|g" ${SCTEMPLATE} > ${SCOUTFILE}
           cp ${SCOUTFILE} ${CONTRACT}         	  				    
-	  
+	  echo "I created the contract"
 	  
 	# Create ARGoS template
-	sed -e "s|BASEDIR|$BASEDIR|g"\
+	  sed -e "s|BASEDIR|$BASEDIR|g"\
 	    -e "s|CONTRACTADDRESS|$CONTRACTADDRESS|g"\
 	    -e "s|CONTRACTABI|$CONTRACTABI|g"\
 	    -e "s|NUMRUNS|$NUMRUNS|g"\
@@ -74,18 +74,20 @@ for i in `seq 1 $REPETITIONS`; do
 	    -e "s|ARENASIZEHALF|$ARENASIZEHALF|g"\
 	    -e "s|ARENASIZEMINUS|$ARENASIZEMINUS|g"\
 	    -e "s|CELLDIMENSION|$CELLDIMENSION|g"\
-	    
-	    $TEMPLATE > $OUTFILE
-	
-	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/stop_network.sh $k
+	    -e "s|VISUALIZATION|$VISUALIZATION|g"\
+	      $TEMPLATE > $OUTFILE
+	      
+	echo "I created the template"
+	bash ${DOCKERBASE}/local_scripts/stop_network.sh $k
+	echo "I stopped the network"
         sleep 5
-        sudo systemctl restart docker
+        sudo systemctl restart docker.service
 	# Restart network
-	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/start_network.sh $k
+	bash ${DOCKERBASE}/local_scripts/start_network.sh $k
 	# Start experiment
 	argos3 -c $OUTFILE
 	
-	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/stop_network.sh $k
+	bash ${DOCKERBASE}/local_scripts/stop_network.sh $k
 
 	 done
 	     done
