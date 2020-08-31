@@ -129,6 +129,7 @@ public:
     return m_sStateData.State == SStateData::STATE_DIFFUSING;
   }
 
+  inline int getMySubmittedVotes() {return mySubmittedVotes; }
   inline std::string getEnode() { return enode; }
   inline int getByzantineStyle() { return byzantineStyle; }
   inline bool getConsensusReached() { return consensusReached; }
@@ -185,6 +186,7 @@ private:
   bool receivedDecision;
   CColor red, blue, green;
   bool useFixedEther;
+  int mySubmittedVotes;
 };
 
 #endif

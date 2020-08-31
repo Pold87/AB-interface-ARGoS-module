@@ -77,10 +77,10 @@ for i in `seq 1 $REPETITIONS`; do
 	    -e "s|VISUALIZATION|$VISUALIZATION|g"\
 	      $TEMPLATE > $OUTFILE
 	      
-	echo "I created the template"
 	bash ${DOCKERBASE}/local_scripts/stop_network.sh $k
-	echo "I stopped the network"
-        sleep 5
+	$TEMPLATE > $OUTFILE
+
+	sleep 5
         sudo systemctl restart docker.service
 	# Restart network
 	bash ${DOCKERBASE}/local_scripts/start_network.sh $k

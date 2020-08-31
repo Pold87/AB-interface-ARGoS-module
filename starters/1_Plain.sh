@@ -8,6 +8,7 @@ DETERMINECONSENSUS="false"
 NUMBYZANTINE=(0)
 BYZANTINESWARMSTYLES=( 0 )
 MAXFLOODING=20
+LENGTHOFRUNS=1000
 SUBSWARMCONSENSUS=false # Determines if all N robots have to agree or
 		       # only the beneficial subswarm.
 

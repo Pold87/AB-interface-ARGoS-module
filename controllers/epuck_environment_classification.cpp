@@ -67,7 +67,7 @@ void EPuck_Environment_Classification::Init(TConfigurationNode &t_node) {
   consensusReached = false;
   scMean = 0;
   useFixedEther = true;
-
+  mySubmittedVotes = 0;
   // Initialize the actuators (and sensors) and the initial velocity as straight
   // walking
   m_pcWheels = GetActuator<CCI_EPuckWheelsActuator>("epuck_wheels");
@@ -288,6 +288,8 @@ void EPuck_Environment_Classification::Explore() {
 
     gethInterface->scInterface("vote", arg, wei);
 
+    mySubmittedVotes++;
+
     CRange<Real> zeroOne(0.0, 1.0);
     Real p = m_pcRNG->Uniform(zeroOne);
     
@@ -301,6 +303,7 @@ void EPuck_Environment_Classification::Explore() {
     if (byzantineStyle > 10 && byzantineStyle < 20) {
       for (int i = 0; i < simulationParams.maxFlooding - 1; i++) {
 	gethInterface->scInterface("vote", arg, wei);
+        mySubmittedVotes++;
       }
     }
 
