@@ -74,7 +74,6 @@ for i in `seq 1 $REPETITIONS`; do
 	    -e "s|ARENASIZEHALF|$ARENASIZEHALF|g"\
 	    -e "s|ARENASIZEMINUS|$ARENASIZEMINUS|g"\
 	    -e "s|CELLDIMENSION|$CELLDIMENSION|g"\
-	    
 	    $TEMPLATE > $OUTFILE
 	
 	bash /home/vstrobel/Documents/docker-geth-network/local_scripts/stop_network.sh $k

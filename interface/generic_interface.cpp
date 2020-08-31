@@ -209,6 +209,7 @@ string GethInterface::scReturn0(string function, long long wei) {
 		<< function << " " << wei;
 
   string s = dockerExecReturn(commandStream.str());
+
   cout << "s is " << s << endl;
 
   // For atoi, the input string has to start with a digit, so let's
@@ -229,7 +230,6 @@ string GethInterface::scReturn0(string function, long long wei) {
   
   return ss.str();
 }
-
 
 void GethInterface::execGethCmd(std::string command) {
   ostringstream commandStream;

@@ -4,10 +4,10 @@ USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
 DOCKERBASE='/home/vstrobel/Documents/docker-geth-network/'
 TEMPLATE='experiments/epuck_EC_locale_template.argos'
-CONTRACT="${DOCKERBASE}/geth/shared/smart_contract_threshold.sol"
-SCTEMPLATE="${DOCKERBASE}/geth/shared/3_Threshold.sol_template"
+CONTRACT="${DOCKERBASE}/geth/shared/Estimation.sol"
+SCTEMPLATE="${DOCKERBASE}/geth/shared/Estimation.sol_template"
 OUTFILE="experiments/epuck.argos"
-SCOUTFILE="${DOCKERBASE}/geth/shared/3_Threshold.sol"
+SCOUTFILE="${DOCKERBASE}/geth/shared/Estimation.sol"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 
@@ -19,8 +19,8 @@ LENGTHOFRUNS=(1000)
 
 MIXINGS=1
 
-ARENASIZEDIM="20.0"
-CELLDIMENSION="1"
+ARENASIZEDIM="2.0"
+CELLDIMENSION="0.1"
 # Cell dimension should be ARENASIZE / 20 for 400 tiles
 # The cell dimension can be changed, this will result in more or less tiles
 # HOWEVER!!: Then you also have to change header file value for TOTAL_CELLS
