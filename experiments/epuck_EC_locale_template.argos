@@ -126,7 +126,6 @@
      <floor id="floor"
            source="loop_functions"
            pixels_per_meter="50" />
-    Place four boxes in a rectangle to delimit the arena
     <box id="wall_north" size="ARENASIZEDIM,0.025,0.08" movable="false">
       <body position="ARENASIZEHALF,ARENASIZEPLUSSMALL,0" orientation="0,0,0" />
     </box>

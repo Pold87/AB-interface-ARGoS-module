@@ -40,8 +40,10 @@ CColor CEnvironmentClassificationLoopFunctions::GetFloorColor(const CVector2& c_
   
     x = (UInt32)(((Real)c_pos_on_floor.GetX())/(Real)cellDimension);
     y = (UInt32)(((Real)c_pos_on_floor.GetY())/(Real)cellDimension);
+
+    UInt32 numCellsPerRow = (UInt32) ((Real) arenaSize) / ((Real) cellDimension);
     
-    i=(UInt32) (y*20 + x);
+    i=(UInt32) (y * numCellsPerRow + x);
     
     switch ( grid[i])
       {

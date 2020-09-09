@@ -45,6 +45,7 @@
 			       profiling="true"
 			       decision_rule="3"
 			       num_pack_saved="2"
+			       percent_white="100"
 			       base_dir="/home/volker/Documents/mygithub-software/robot-swarms-need-blockchain/controllers/epuck_environment_classification/"
 			       use_multiple_nodes="true"
 			       use_background_geth_calls="USEBACKGROUNDGETHCALLS"
@@ -55,7 +56,7 @@
 			       use_classical_approach="false"
 			       regenerate_file=""
 			       max_flooding="20"
-			       percent_black="25"
+			       percent_black="0"
 			       determine_consensus="false"
 			       contract_address="/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface//geth/deployed_contract/contractAddress.txt"
 			       contract_abi="/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface//geth/deployed_contract/contractABI.abi"
@@ -70,17 +71,16 @@
                   label="environment_classification_loop_functions">
 
     <cells  number_of_red_cells="0"
-	    arena_size="2.0"
+	    arena_size="1.0"
 	    cell_dimension="0.1"
-	  base_dir_loop="/home/vstrobel/Documents/ARGoS-geth-interface/controllers/epuck_environment_classification/"
-	  data_dir="data/6_Byzantine_Binary_3-11/1000000/"
+	  base_dir_loop="/home/volker/Documents/mygithub-software/robot-swarms-need-blockchain/controllers/epuck_environment_classification/"
+	  data_dir="data/1_Plain_3-61/1000000/"
           number_of_white_cells="0"
 	  number_of_black_cells="0"
 	  using_percentage="true"
-	  percent_white="75"
+	  percent_white="100"
 	  exit="true"            
-	  percent_black="25"
-	  
+	  percent_black="0"
 	  percent_red="0"
 	  save_every_ticks="100000"
 	  save_every_ticks_flag="true"
@@ -104,7 +104,7 @@
 	  use_multiple_nodes="true"
 	  decision_rule="3"
 	  use_classical_approach="false"
-	  num_byzantine="4"
+	  num_byzantine="0"
 	  byzantine_swarm_style="0"
 	  subswarm_consensus="false"
 	  regenerate_file=""
@@ -122,26 +122,25 @@
   
   <!-- Real arena size is 10.3 * 5.15. We put 10.45 * 5.45 because of the walls but the real 
        usable arena for the robots is 10.3*5.-->
-    <arena size="2.1, 2.1, 1" center="1,1,0">
+    <arena size="1.1, 1.1, 1" center=".5000,.5000,0">
      <floor id="floor"
            source="loop_functions"
            pixels_per_meter="50" />
-    Place four boxes in a rectangle to delimit the arena
-    <box id="wall_north" size="2.0,0.025,0.08" movable="false">
-      <body position="1,2.0075,0" orientation="0,0,0" />
+    <box id="wall_north" size="1.0,0.025,0.08" movable="false">
+      <body position=".5000,1.0075,0" orientation="0,0,0" />
     </box>
-    <box id="wall_south" size="2.0,0.025,0.08" movable="false">
-      <body position="1,0.0075,0" orientation="0,0,0" />
+    <box id="wall_south" size="1.0,0.025,0.08" movable="false">
+      <body position=".5000,0.0075,0" orientation="0,0,0" />
     </box>
-    <box id="wall_east" size="0.025,2.0,0.08" movable="false">
-      <body position="2.0075,1,0" orientation="0,0,0" />
+    <box id="wall_east" size="0.025,1.0,0.08" movable="false">
+      <body position="1.0075,.5000,0" orientation="0,0,0" />
     </box>
-    <box id="wall_west" size="0.025,2.0,0.08" movable="false">
-      <body position="0.0075,1 ,0" orientation="0,0,0" />
+    <box id="wall_west" size="0.025,1.0,0.08" movable="false">
+      <body position="0.0075,.5000 ,0" orientation="0,0,0" />
     </box>
 
    <distribute>
-      <position method="uniform" min="0.1,0.1,0" max="1.9,1.9,0" />
+      <position method="uniform" min="0.1,0.1,0" max=".9,.9,0" />
       <orientation method="gaussian" mean="1,1,0 " std_dev="360,0,0 " />
       <entity quantity="4" max_trials="20">
         <e-puck id="ep" >

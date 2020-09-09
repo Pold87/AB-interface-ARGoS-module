@@ -3,10 +3,10 @@
 USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
 DOCKERBASE='/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface/'
-TEMPLATE='experiments/epuck_EC_locale_template.argos'
+TEMPLATE='./experiments/epuck_EC_locale_template.argos'
 CONTRACT="${DOCKERBASE}/geth/shared/Estimation.sol"
 SCTEMPLATE="${DOCKERBASE}/geth/shared/Estimation.sol_template"
-OUTFILE="experiments/epuck.argos"
+OUTFILE="./experiments/epuck.argos"
 SCOUTFILE="${DOCKERBASE}/geth/shared/Estimation.sol"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
@@ -20,16 +20,20 @@ LENGTHOFRUNS=(1000)
 MIXINGS=1
 VISUALIZATION=visualization #visualization or none
 
-ARENASIZEDIM="2.0"
+ARENASIZEDIM="1.0"
 CELLDIMENSION="0.1"
 # Cell dimension should be ARENASIZE / 20 for 400 tiles
 # The cell dimension can be changed, this will result in more or less tiles
-# HOWEVER!!: Then you also have to change header file value for TOTAL_CELLS
-ARENASIZEPLUSLARGE=`echo $ARENASIZEDIM + 0.1 | bc`
-ARENASIZEPLUSSMALL=`echo $ARENASIZEDIM + 0.0075 | bc`
-ARENASIZEHALF=`echo $ARENASIZEDIM / 2 | bc`
-ARENASIZEMINUS=`echo $ARENASIZEDIM - 0.1 | bc`
+# HOWEVER!!: Then you also have to change header file value for NUM_CELLS
+ARENASIZEPLUSLARGE=`echo "scale=4; $ARENASIZEDIM + 0.1" | bc`
+ARENASIZEPLUSSMALL=`echo "scale=4; $ARENASIZEDIM + 0.0075" | bc`
+ARENASIZEHALF=`echo "scale=4; $ARENASIZEDIM / 2" | bc`
+ARENASIZEMINUS=`echo "scale=4; $ARENASIZEDIM - 0.1" | bc`
 
+echo ${ARENASIZEPLUSLARGE}
+echo ${ARENASIZEPLUSSMALL}
+echo ${ARENASIZEHALF}
+echo ${ARENASIZEMINUS}
 
 MININGDIFF=1000000
 USEMULTIPLENODES=true

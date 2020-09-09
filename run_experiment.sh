@@ -33,7 +33,7 @@ for i in `seq 1 $REPETITIONS`; do
 	RADIX=$(printf 'num%d_black%d_byz%d_run%d' $k $PERCENT_BLACK $y $i)
 
         # Create smart contract with specified tau (threshold)
-	  rm ${SCOUTFILE} ${CONTRACT}          
+	  rm -f ${SCOUTFILE} ${CONTRACT}          
 	  sed -e "s|TAU|$TAU|g" ${SCTEMPLATE} > ${SCOUTFILE}
           cp ${SCOUTFILE} ${CONTRACT}         	  				    
 	  echo "I created the contract"
@@ -78,7 +78,6 @@ for i in `seq 1 $REPETITIONS`; do
 	      $TEMPLATE > $OUTFILE
 	      
 	bash ${DOCKERBASE}/local_scripts/stop_network.sh $k
-	$TEMPLATE > $OUTFILE
 
 	sleep 5
         sudo systemctl restart docker.service
