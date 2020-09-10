@@ -1,4 +1,4 @@
-# ARGoS-Blockchain interface (ARGoS part)
+# ARGoS-Blockchain interface (ARGoS module)
 
 This module allows for running the ARGoS robot simulations described
 in the article [Blockchain Technology Secures Robot Swarms: A
