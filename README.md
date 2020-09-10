@@ -25,7 +25,11 @@ make
 
 ## Run
 
-Use one of the starter scripts in the folder `starters`.
+Use one of the starter scripts in the folder `starters`. For example:
+
+```
+bash starters/1_Plain.sh 3
+```
 
 ## Folder structure
 
