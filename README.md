@@ -1,4 +1,4 @@
-# ARGoS-Blockchain interface (ARGoS part)
+# ARGoS-Blockchain interface (ARGoS module)
 
 This module allows for running the ARGoS robot simulations described
 in the article [Blockchain Technology Secures Robot Swarms: A
@@ -25,7 +25,11 @@ make
 
 ## Run
 
-Use one of the starter scripts in the folder `starters`.
+Use one of the starter scripts in the folder `starters`. For example:
+
+```
+bash starters/1_Plain.sh 3
+```
 
 ## Folder structure
 
