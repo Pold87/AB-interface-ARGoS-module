@@ -11,7 +11,7 @@ SCOUTFILE="${DOCKERBASE}/geth/shared/Estimation.sol"
 BASEDIR="$PWD/controllers/epuck_environment_classification/"
 BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 
-DECISIONRULE=$1
+DECISIONRULE=3 
 NUMROBOTS=(4)
 REPETITIONS=30
 TAUS=(1000000)
