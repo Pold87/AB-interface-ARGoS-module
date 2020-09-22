@@ -45,8 +45,8 @@
 			       profiling="true"
 			       decision_rule="3"
 			       num_pack_saved="2"
-			       percent_white="100"
-			       base_dir="/home/volker/Documents/mygithub-software/robot-swarms-need-blockchain/controllers/epuck_environment_classification/"
+			       percent_white="32"
+			       base_dir="/home/volker/Documents/mygithub-software/AB-interface/ARGoS-module/controllers/epuck_environment_classification/"
 			       use_multiple_nodes="true"
 			       use_background_geth_calls="USEBACKGROUNDGETHCALLS"
 			       interface_path="interface.txt"
@@ -56,10 +56,10 @@
 			       use_classical_approach="false"
 			       regenerate_file=""
 			       max_flooding="20"
-			       percent_black="0"
+			       percent_black="68"
 			       determine_consensus="false"
-			       contract_address="/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface//geth/deployed_contract/contractAddress.txt"
-			       contract_abi="/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface//geth/deployed_contract/contractABI.abi"
+			       contract_address="/home/volker/Documents/mygithub-software/AB-interface/Blockchain-module/geth/deployed_contract/contractAddress.txt"
+			       contract_abi="/home/volker/Documents/mygithub-software/AB-interface/Blockchain-module/geth/deployed_contract/contractABI.abi"
 			       container_name_base="ethereum_eth."
 			       distribute_ether="false"/> <!-- Sigma and G must be inserted in seconds, not in ticks; 
 							  1 = Voter model; 2 = Direct comparison; 3 = Majority Rule-->
@@ -73,14 +73,14 @@
     <cells  number_of_red_cells="0"
 	    arena_size="1.0"
 	    cell_dimension="0.1"
-	  base_dir_loop="/home/volker/Documents/mygithub-software/robot-swarms-need-blockchain/controllers/epuck_environment_classification/"
-	  data_dir="data/1_Plain_3-61/1000000/"
+	  base_dir_loop="/home/volker/Documents/mygithub-software/AB-interface/ARGoS-module/controllers/epuck_environment_classification/"
+	  data_dir="data/2_Increasing_Size_No_Byz_3-1/1000000/"
           number_of_white_cells="0"
 	  number_of_black_cells="0"
 	  using_percentage="true"
-	  percent_white="100"
+	  percent_white="32"
 	  exit="true"            
-	  percent_black="0"
+	  percent_black="68"
 	  percent_red="0"
 	  save_every_ticks="100000"
 	  save_every_ticks_flag="true"
@@ -89,12 +89,12 @@
 	  save_every_robot_flag="false"
 	  save_every_quality_flag="false"
 	  save_global_stat_flag="false"
-	  radix="num4_black0_byz0_run1"
-	  number_of_robots="4"
+	  radix="num5_black68_byz0_run1"
+	  number_of_robots="5"
 	  number_of_runs="1"
 	  number_of_qualities="2"
 	  r_0="0"
-	  w_0="4"
+	  w_0="5"
 	  b_0="0"	  
 	  length_of_runs="1000"
 	  g="10"
@@ -110,8 +110,8 @@
 	  regenerate_file=""
 	  color_mixing="1"
 	  blockchain_path="/home/volker/eth_data_para/data"
-	  contract_address="/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface//geth/deployed_contract/contractAddress.txt"
-	  contract_abi="/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface//geth/deployed_contract/contractABI.abi"
+	  contract_address="/home/volker/Documents/mygithub-software/AB-interface/Blockchain-module/geth/deployed_contract/contractAddress.txt"
+	  contract_abi="/home/volker/Documents/mygithub-software/AB-interface/Blockchain-module/geth/deployed_contract/contractABI.abi"
 	  container_name_base="ethereum_eth."
 	  determine_consensus="false"/>
 
@@ -142,7 +142,7 @@
    <distribute>
       <position method="uniform" min="0.1,0.1,0" max=".9,.9,0" />
       <orientation method="gaussian" mean="1,1,0 " std_dev="360,0,0 " />
-      <entity quantity="4" max_trials="20">
+      <entity quantity="5" max_trials="20">
         <e-puck id="ep" >
           <controller config="epc" />
         </e-puck>

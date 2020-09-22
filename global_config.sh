@@ -2,7 +2,7 @@
 
 USERNAME=`whoami`
 mailto='volker.strobel87@gmail.com'
-DOCKERBASE='/home/volker/Documents/mygithub-software/ARGoS-Blockchain-interface/'
+DOCKERBASE='/home/volker/Documents/mygithub-software/AB-interface/Blockchain-module'
 TEMPLATE='./experiments/epuck_EC_locale_template.argos'
 CONTRACT="${DOCKERBASE}/geth/shared/Estimation.sol"
 SCTEMPLATE="${DOCKERBASE}/geth/shared/Estimation.sol_template"
@@ -13,7 +13,7 @@ BLOCKCHAINPATH="$HOME/eth_data_para/data" # always without '/' at the end!!
 
 DECISIONRULE=3 
 NUMROBOTS=(4)
-REPETITIONS=30
+REPETITIONS=10
 TAUS=(1000000)
 LENGTHOFRUNS=(1000)
 

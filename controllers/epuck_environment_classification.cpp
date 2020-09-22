@@ -166,6 +166,7 @@ void EPuck_Environment_Classification::ControlStep() {
   }
 
   RandomWalk();
+  ObstacleAvoidance();
 }
 
 void EPuck_Environment_Classification::Explore() {
